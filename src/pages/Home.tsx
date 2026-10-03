@@ -5,14 +5,15 @@ import { Icon } from '../components/Icon'
 
 const CHAIN = [
   { n: '1', title: 'Concept', text: 'CSM: the unearned profit held back on day one', to: '/concept/csm' },
-  { n: '2', title: 'Calculation', text: 'Roll the CSM forward: accrete, adjust, release', to: '/sandbox' },
+  { n: '2', title: 'Calculation', text: 'Roll the CSM forward: accrete, adjust, release', to: '/sandbox#bridge' },
   { n: '3', title: 'Journal entry', text: 'Debit LRC, credit insurance revenue', to: '/concept/insurance-revenue' },
   { n: '4', title: 'Disclosure', text: 'CSM line in the IFRS 17.101 reconciliation', to: '/concept/disclosures' },
   { n: '5', title: 'Tagetik build', text: 'Calculation rules, posting scheme, disclosure report', to: '/concept/tagetik-csm-build' },
 ]
 
 export function Home() {
-  const { role, setRole, visited } = usePrefs()
+  const { role, setRole, visited, lastConcept } = usePrefs()
+  const last = lastConcept ? CONCEPTS.find((c) => c.id === lastConcept) : null
   const current = ROLES.find((r) => r.id === role)
   const start = current ? CONCEPTS.find((c) => c.id === current.start) : null
 
@@ -30,10 +31,14 @@ export function Home() {
             implementation.
           </p>
           <div className="hero-cta row">
-            <Link className="btn btn-primary" to={start ? `/concept/${start.id}` : '/learn'}>
-              {start ? `Start: ${start.title}` : 'Start learning'} <Icon name="arrow" />
-            </Link>
-            <Link className="btn btn-ghost" to="/sandbox">Open the IFRS 17 sandbox</Link>
+            {last ? (
+              <Link className="btn btn-primary" to={`/concept/${last.id}`}>Continue: {last.title} <Icon name="arrow" /></Link>
+            ) : (
+              <Link className="btn btn-primary" to={start ? `/concept/${start.id}` : '/learn'}>
+                {start ? `Start: ${start.title}` : 'Start learning'} <Icon name="arrow" />
+              </Link>
+            )}
+            <Link className="btn btn-ghost" to="/lab">Explore the Labs</Link>
           </div>
           <div style={{ marginTop: 28 }}>
             <div className="eyebrow">I am</div>
@@ -97,8 +102,9 @@ export function Home() {
         <div className="section-head">
           <div>
             <h2>Learn by doing</h2>
-            <p>The sandbox, journals and disclosures share one tested calculation engine, so every number ties across views.</p>
+            <p>Four labs and a set of missions share one tested calculation engine, so every number ties across views.</p>
           </div>
+          <Link to="/lab">All labs</Link>
         </div>
         <div className="grid cols-feat">
           <Link to="/sandbox" className="panel feature">
@@ -106,25 +112,25 @@ export function Home() {
             <h3>IFRS 17 measurement simulator</h3>
             <p>Change premiums, claims, discount rate or the claims outlook and watch the CSM, LRC, LIC and profit move year by year.</p>
           </Link>
-          <Link to="/sandbox#journals" className="panel feature">
-            <span className="eyebrow">Journals</span>
-            <h3>Every entry, every year</h3>
-            <p>See the double entries a year produces and how they post to the liability and income statement lines.</p>
+          <Link to="/lab" className="panel feature">
+            <span className="eyebrow">Missions</span>
+            <h3>Eight guided challenges</h3>
+            <p>Tip a group into loss, exhaust the CSM, reverse a loss component. Each mission ends with the lesson behind it.</p>
           </Link>
-          <Link to="/sandbox#disclosures" className="panel feature">
-            <span className="eyebrow">Disclosures</span>
-            <h3>Reconciliations that tie</h3>
-            <p>The IFRS 17.103, 104 and 106 tables generated from the same run, with a tie-out check on every column.</p>
+          <Link to="/lab/pipeline" className="panel feature">
+            <span className="eyebrow">Implementation lab</span>
+            <h3>Data to ledger, with controls</h3>
+            <p>Load, validate, calculate, post and reconcile one period. Break the data and see which control catches it.</p>
+          </Link>
+          <Link to="/lab/paa" className="panel feature">
+            <span className="eyebrow">PAA versus GMM</span>
+            <h3>Same group, two models</h3>
+            <p>Compare revenue, liabilities and profit year by year, and test PAA eligibility.</p>
           </Link>
           <Link to="/map" className="panel feature">
             <span className="eyebrow">Concept map</span>
             <h3>See how it all connects</h3>
             <p>Explore the knowledge graph from foundations to Tagetik objects. Pick a node to light up its links.</p>
-          </Link>
-          <Link to="/glossary" className="panel feature">
-            <span className="eyebrow">Glossary</span>
-            <h3>No jargon walls</h3>
-            <p>Every IFRS 17 term in plain English, with hover cards wherever it appears in the text.</p>
           </Link>
           <Link to="/concept/tagetik-overview" className="panel feature">
             <span className="eyebrow">Implementation</span>

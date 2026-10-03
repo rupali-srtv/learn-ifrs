@@ -7,6 +7,50 @@ import type { Concept } from './types'
  */
 export const TAGETIK: Concept[] = [
   {
+    id: 'tagetik-platform',
+    title: 'Platform foundations: dimensions, scenarios, processing, workflow and reporting',
+    track: 'C',
+    module: 'C1',
+    kind: 'tagetik',
+    summary:
+      'CCH Tagetik is a multidimensional performance management platform: every number is stored against a combination of dimensions such as entity, account, period and scenario. An IFRS 17 solution is built from the same foundations, so understanding them comes before any IFRS 17 configuration.',
+    explain: [
+      'Picture a spreadsheet with many more than two axes. Instead of rows and columns, each value sits at the intersection of several dimensions: which legal entity, which account, which period, which scenario, which currency, and any custom dimensions the solution needs. That intersection is the address of the number.',
+      'Five building blocks recur in any implementation:',
+      '- Dimensions and metadata: the members of each dimension and their hierarchies, for example accounts rolling up into statement lines or entities rolling up into a group.',
+      '- Scenarios and periods: separate versions of the numbers (actual, budget, forecast, or for IFRS 17, projected versus actual cash flows and assumption versions) across a time axis.',
+      '- Data processing: loading, validating, mapping and calculating data through rules.',
+      '- Workflow: the steps, owners, approvals and locks that turn processing into a controlled close.',
+      '- Reporting: layouts and analyses that read the stored data.',
+      '> This track describes implementation patterns. Exact object names, screens and options differ by CCH Tagetik release and must be validated in your environment.',
+    ],
+    apply: [
+      'How the building blocks carry IFRS 17:',
+      '- Dimensions hold the [[level-of-aggregation|group key]] (portfolio, profitability bucket, cohort), the measurement model, cash flow type and movement type. A movement-type dimension is what lets [[disclosures|reconciliations]] read straight from stored results.',
+      '- Scenarios separate actual data from actuarial projections and keep current, prior and locked-in assumption sets apart, so an analysis of change compares like with like.',
+      '- Periods carry both the reporting period and, for projected cash flows, the projection period. Keeping these as distinct axes avoids the classic confusion between when a number was reported and when the cash is expected.',
+      '- Metadata hierarchies map detailed accounts to presentation lines. Changing presentation, for example to IFRS 18, should mean changing hierarchies and mappings, not calculation rules.',
+      'Granular contract and cash flow data volumes are much larger than a typical consolidation. Tagetik offers analytical, high-volume data structures for this kind of detail (marketed as an analytical workspace in some releases); the pattern is to calculate on granular data there and pass aggregated, group-level results into the financial model.',
+    ],
+    implement: [
+      'Patterns that hold regardless of release:',
+      '- Design the dimension model first and freeze it before building rules; adding a dimension late forces rework across loads, calculations and reports.',
+      '- Govern metadata: new portfolios, cohorts and accounts are created through a controlled process, not ad hoc during the close.',
+      '- Build processing as a chain of discrete, rerunnable steps, each with validation checks and logged results.',
+      '- Use workflow to enforce order (no calculation before data is approved, no journals before calculation is reviewed) and to lock periods after sign-off.',
+      '- Build reports on the same stored data used for journals, so the ledger, the statements and the notes cannot drift apart.',
+      'Then move on to the [[tagetik-overview|end-to-end IFRS 17 chain]] and the [[tagetik-data-model|data model design]].',
+    ],
+    refs: ['IFRS 17.14–24', 'IFRS 17.98'],
+    links: [
+      { type: 'builds-on', to: 'double-entry' },
+      { type: 'builds-on', to: 'financial-statements' },
+    ],
+    lenses: {
+      developer: 'Write down the dimension model, the scenario list and the workflow steps on one page before configuring anything; every later design decision refers back to it.',
+    },
+  },
+  {
     id: 'tagetik-overview',
     title: 'IFRS 17 in CCH Tagetik: the end-to-end chain',
     track: 'C',
@@ -39,6 +83,7 @@ export const TAGETIK: Concept[] = [
     refs: ['IFRS 17.29–32', 'IFRS 17.93'],
     links: [
       { type: 'builds-on', to: 'ifrs17-why' },
+      { type: 'builds-on', to: 'tagetik-platform' },
       { type: 'builds-on', to: 'tagetik-data-model' },
       { type: 'builds-on', to: 'tagetik-csm-build' },
       { type: 'builds-on', to: 'tagetik-journals' },
@@ -79,6 +124,8 @@ export const TAGETIK: Concept[] = [
       { type: 'builds-on', to: 'level-of-aggregation' },
       { type: 'builds-on', to: 'fulfilment-cash-flows' },
       { type: 'builds-on', to: 'coverage-units' },
+      { type: 'builds-on', to: 'tagetik-platform' },
+      { type: 'builds-on', to: 'reinsurance-held' },
     ],
     lenses: {
       developer: 'Agree the grain and sign convention with the actuarial team before building any calculation.',
@@ -201,6 +248,7 @@ export const TAGETIK: Concept[] = [
     links: [
       { type: 'builds-on', to: 'tagetik-csm-build' },
       { type: 'builds-on', to: 'tagetik-disclosures' },
+      { type: 'builds-on', to: 'operating-ifrs17' },
     ],
   },
 ]

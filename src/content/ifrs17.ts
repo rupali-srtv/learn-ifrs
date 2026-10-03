@@ -51,7 +51,7 @@ export const IFRS17: Concept[] = [
       '- Significant insurance risk, assessed on a present value basis in scenarios with commercial substance (B17–B23).',
       '- Exclusions such as product warranties issued by a manufacturer and certain financial guarantee contracts (IFRS 17.7).',
       '- Separation of distinct components: embedded derivatives, distinct investment components and distinct goods or services are accounted for under other standards (IFRS 17.10–13).',
-      '- Reinsurance contracts held are in scope but measured separately from the underlying contracts.',
+      '- [[reinsurance-held|Reinsurance contracts held]] are in scope but measured separately from the underlying contracts.',
       '- Investment contracts with discretionary participation features are in scope if the entity also issues insurance contracts.',
     ],
     implement: [
@@ -61,6 +61,7 @@ export const IFRS17: Concept[] = [
     links: [
       { type: 'builds-on', to: 'ifrs17-why' },
       { type: 'measured-by', to: 'level-of-aggregation' },
+      { type: 'contrasts-with', to: 'key-standards' },
     ],
     lenses: {
       auditor: 'Test the product-level scope conclusions, especially for savings products where insurance risk may be insignificant.',
@@ -83,7 +84,7 @@ export const IFRS17: Concept[] = [
     apply: [
       'Groups are fixed at initial recognition and not reassessed. An entity may form more granular groups than required.',
       'The EU endorsed IFRS 17 with an optional exemption from the annual cohort requirement for certain intergenerationally-mutualised and cash-flow-matched contracts. Entities applying the exemption disclose it.',
-      'Reinsurance contracts held are grouped separately, and a group of reinsurance held can be in a net gain position at initial recognition.',
+      '[[reinsurance-held|Reinsurance contracts held]] are grouped separately, with the onerous split replaced by a split based on net gain at initial recognition (IFRS 17.61).',
     ],
     implement: [
       'The group key (portfolio × profitability bucket × cohort year, often with currency and legal entity) is the backbone of the data model. Actuarial cash flows, actual cash, CSM balances and journals must all carry the same key. Getting it wrong is the most expensive implementation mistake. See [[tagetik-data-model|data model design]].',
@@ -91,6 +92,7 @@ export const IFRS17: Concept[] = [
     refs: ['IFRS 17.14–24', 'IFRS 17.61'],
     links: [
       { type: 'builds-on', to: 'insurance-contract' },
+      { type: 'builds-on', to: 'conceptual-framework' },
       { type: 'measured-by', to: 'gmm' },
       { type: 'implemented-by', to: 'tagetik-data-model' },
       { type: 'requires-data', to: 'tagetik-data-model' },
@@ -366,7 +368,7 @@ export const IFRS17: Concept[] = [
     implement: [
       'LIC cash flows usually come from reserving models (chain ladder, Bornhuetter–Ferguson). Interfaces must carry accident year to match the right group cohort.',
     ],
-    refs: ['IFRS 17.40(b)', 'IFRS 17.B97(c)', 'IFRS 17.59(b)'],
+    refs: ['IFRS 17.40(b)', 'IFRS 17.B97', 'IFRS 17.59(b)'],
     links: [
       { type: 'builds-on', to: 'gmm' },
       { type: 'disclosed-in', to: 'disclosures' },
@@ -423,6 +425,7 @@ export const IFRS17: Concept[] = [
     links: [
       { type: 'builds-on', to: 'onerous-contracts' },
       { type: 'contrasts-with', to: 'csm' },
+      { type: 'contrasts-with', to: 'reinsurance-held' },
       { type: 'disclosed-in', to: 'disclosures' },
       { type: 'implemented-by', to: 'tagetik-csm-build' },
     ],
@@ -507,6 +510,7 @@ export const IFRS17: Concept[] = [
     refs: ['IFRS 17.87–92', 'IFRS 17.B128–B136'],
     links: [
       { type: 'builds-on', to: 'discounting' },
+      { type: 'builds-on', to: 'key-standards' },
       { type: 'disclosed-in', to: 'disclosures' },
     ],
     sandbox: 'journals',
@@ -558,6 +562,54 @@ export const IFRS17: Concept[] = [
       { type: 'contrasts-with', to: 'gmm' },
       { type: 'builds-on', to: 'csm' },
     ],
+  },
+  {
+    id: 'reinsurance-held',
+    title: 'Reinsurance contracts held',
+    track: 'B',
+    module: 'B10',
+    kind: 'measurement',
+    summary:
+      'A reinsurance contract held is measured as its own asset or liability, separately from the insurance contracts it protects. Any net cost or net gain on buying the cover is deferred in a CSM, except that a loss-recovery component lets the insurer recognise recoveries of losses on onerous underlying contracts at the same time as those losses.',
+    explain: [
+      'An insurer that buys reinsurance passes part of its risk to a reinsurer in return for a premium. It is now the policyholder. IFRS 17 measures that contract using the same building blocks as insurance issued, but from the buyer’s side: expected recoveries in, reinsurance premiums out.',
+      'The reinsurance is not netted against the underlying business. The insurer keeps its full liability to its own policyholders and recognises the reinsurance separately, usually as an asset.',
+      'Buying reinsurance normally costs more than the expected recoveries, because the reinsurer wants a margin. That net cost is not an immediate loss. It is deferred in the reinsurance [[csm|CSM]] and recognised as the cover is received. A net gain is deferred the same way.',
+      '> The awkward case: an underlying group is onerous, so its loss hits profit or loss on day one, but the reinsurance that protects it has only a deferred CSM. The loss-recovery component fixes that mismatch.',
+    ],
+    apply: [
+      'Measurement modifications for reinsurance held (IFRS 17.60–70A):',
+      '- Assumptions are consistent with those used for the underlying contracts, and the estimates include the effect of any risk of non-performance by the reinsurer, including collateral and losses from disputes (IFRS 17.63). This differs from insurance issued, where the entity’s own non-performance risk is excluded (IFRS 17.31).',
+      '- The risk adjustment is the amount of risk transferred by the insurer to the reinsurer (IFRS 17.64).',
+      '- At initial recognition the net cost or net gain is recognised as a CSM, which can be positive or negative (IFRS 17.65). A net cost that relates to insured events that occurred before the purchase is expensed immediately (IFRS 17.65A).',
+      '- Changes in fulfilment cash flows from changes in the reinsurer’s non-performance risk do not relate to future service and go to profit or loss, not the CSM (IFRS 17.67).',
+      'Loss-recovery component (IFRS 17.66A–66B, B119C–B119F). When the insurer recognises a loss on initial recognition of an onerous group of underlying contracts, or when onerous contracts are added to a group, it adjusts the reinsurance CSM and recognises income at the same time, provided the reinsurance contract was entered into before or at the same time as the onerous contracts were recognised:',
+      '$ Loss recovery = Loss on underlying contracts × % of underlying claims expected to be recovered',
+      'For example, a loss of 200 on an onerous underlying group covered by a 25% quota share gives income of 50. The insurer then tracks a loss-recovery component of the asset for remaining coverage, adjusted as the underlying loss component changes and never exceeding the portion of that loss component it expects to recover.',
+      'Presentation: income or expenses from reinsurance held are presented separately from insurance contracts issued (IFRS 17.82). They may be shown as a single net amount, or as amounts recovered from the reinsurer and an allocation of the premiums paid. Ceding commissions not contingent on claims reduce the premiums paid, and the allocation of premiums paid is not presented as a reduction of insurance revenue (IFRS 17.86). On the balance sheet, portfolios of reinsurance held in an asset position are shown separately from those in a liability position (IFRS 17.78).',
+      'The [[paa|PAA]] may be used if each contract in the group has a coverage period of one year or less, or if it is reasonably expected not to differ materially from the GMM (IFRS 17.69). The second test fails where significant variability in fulfilment cash flows is expected before claims are incurred (IFRS 17.70). This matters for risk-attaching treaties, whose coverage period can exceed a year because they cover claims on underlying policies written throughout the treaty year. Reinsurance held can never be measured under the [[vfa|VFA]] (IFRS 17.B109).',
+    ],
+    implement: [
+      'Model reinsurance held as its own contract type in the data model, with its own groups, cash flows, CSM and movement types, and a mapping to the underlying groups it covers. The loss-recovery calculation needs that mapping and the recovery percentage per underlying group.',
+      'Run order matters: the onerous test on the underlying groups must complete before the reinsurance calculation, because the loss-recovery component is driven by the underlying loss component. Persist the loss-recovery movements separately so they feed both the reconciliation and the journals.',
+      'Treaty data often sits outside policy administration, in a reinsurance system or spreadsheets. Reconcile reinsurance cash flows to the reinsurer accounts, and keep the non-performance adjustment as a separately identifiable input so its changes can be routed to profit or loss.',
+    ],
+    refs: ['IFRS 17.60–70A', 'IFRS 17.66A–66B', 'IFRS 17.B119C–B119F', 'IFRS 17.78', 'IFRS 17.82', 'IFRS 17.86', 'IFRS 17.B109'],
+    links: [
+      { type: 'builds-on', to: 'gmm' },
+      { type: 'builds-on', to: 'csm' },
+      { type: 'builds-on', to: 'onerous-contracts' },
+      { type: 'measured-by', to: 'fulfilment-cash-flows' },
+      { type: 'contrasts-with', to: 'insurance-revenue' },
+      { type: 'contrasts-with', to: 'paa' },
+      { type: 'disclosed-in', to: 'disclosures' },
+      { type: 'requires-data', to: 'tagetik-data-model' },
+    ],
+    lenses: {
+      auditor: 'For loss-recovery income, test that the reinsurance was in place when the onerous contracts were recognised and that the recovery percentage reflects the treaty terms. Check that non-performance changes did not adjust the CSM.',
+      actuary: 'Use assumptions consistent with the underlying business. The boundary of a reinsurance contract held can include cash flows from underlying contracts not yet issued, so projections may need expected future new business.',
+      developer: 'Keep a governed link from each reinsurance group to its underlying groups; the loss-recovery component cannot be calculated without it.',
+    },
   },
   {
     id: 'disclosures',
@@ -617,5 +669,51 @@ export const IFRS17: Concept[] = [
       { type: 'builds-on', to: 'csm' },
       { type: 'disclosed-in', to: 'disclosures' },
     ],
+  },
+  {
+    id: 'operating-ifrs17',
+    title: 'Operating IFRS 17: data, handshake and close',
+    track: 'B',
+    module: 'B15',
+    kind: 'measurement',
+    summary:
+      'Running IFRS 17 every quarter is a joint production process between actuarial, finance and IT teams. Its quality depends on data at group level, agreed hand-offs, a close calendar that leaves room for review, and controls that leave evidence an auditor can follow.',
+    explain: [
+      'IFRS 17 numbers are estimates built from many inputs: policy data, actuarial cash flow projections, discount curves, the risk adjustment, coverage units and actual cash from the ledger. No single team owns all of them.',
+      'The actuarial-finance handshake is the agreement about who delivers what, when, at which grain and with which sign convention. When it is weak, the close becomes a reconciliation exercise; when it is strong, the close is a sequence of checked hand-offs.',
+      '> Most unexplained CSM movements in practice are not accounting errors. They are data or assumption changes that reached the engine without being flagged.',
+    ],
+    apply: [
+      'Data needed per group and period:',
+      '- Projected cash flows by type, from actuarial models, at current and locked-in rates.',
+      '- Actual premiums, claims, expenses and acquisition cash flows, from policy administration, claims systems and the ledger, to measure [[experience-adjustment|experience adjustments]].',
+      '- Discount curves, risk adjustment and coverage units, each versioned.',
+      '- Group attributes: portfolio, profitability bucket, cohort, measurement model and transition approach.',
+      'Granularity: the CSM and loss component must be tracked per [[level-of-aggregation|group]], but fulfilment cash flows may be estimated at a higher level and allocated to groups, provided the appropriate cash flows end up in each group (IFRS 17.24). The allocation method is a judgement to document and apply consistently.',
+      'Interim reporting: an entity chooses as an accounting policy whether to change the treatment of accounting estimates made in previous interim financial statements, and applies that choice to all groups it issues and reinsurance groups it holds (IFRS 17.B137). The choice affects how quarterly closes build up to the annual result.',
+      'Significant judgements, including methods, inputs and the processes for estimating them, are disclosed (IFRS 17.117). The operating model must be able to evidence what was disclosed.',
+    ],
+    implement: [
+      'A typical quarterly close calendar runs: data cut-off and validation, actuarial runs and assumption sign-off, load into the subledger with completeness checks, calculation and onerous testing, review of the analysis of change, journals to the ledger, then disclosures and sign-off. Many insurers run actuarial projections on data taken before period end and roll them forward; the roll-forward method and any true-up should be documented.',
+      'Controls auditors commonly expect:',
+      '- Completeness and accuracy reconciliations: policy data to actuarial model inputs, actuarial outputs to engine inputs, engine results to the general ledger.',
+      '- Assumption governance: approval of each assumption set, version control and a log of changes.',
+      '- Analytical review of the CSM, risk adjustment and loss component movements, with thresholds and documented explanations.',
+      '- Change control over models, calculation rules and mappings, with segregation between those who build and those who approve.',
+      'Audit evidence: auditors apply ISA 540 (Revised) to accounting estimates, testing methods, significant assumptions and data. Keep run identifiers, input versions and approvals linked to each result so any number can be traced back to its inputs. See [[tagetik-testing|testing and go-live]].',
+    ],
+    refs: ['IFRS 17.24', 'IFRS 17.33', 'IFRS 17.117', 'IFRS 17.B137'],
+    links: [
+      { type: 'builds-on', to: 'level-of-aggregation' },
+      { type: 'builds-on', to: 'fulfilment-cash-flows' },
+      { type: 'disclosed-in', to: 'disclosures' },
+      { type: 'requires-data', to: 'tagetik-data-model' },
+      { type: 'implemented-by', to: 'tagetik-testing' },
+    ],
+    lenses: {
+      auditor: 'Walk one group from source data to the disclosure, checking each hand-off has a control and evidence that it operated.',
+      actuary: 'Agree a data dictionary with finance before the first dry run: grain, sign convention, cut-off date and assumption version for every file.',
+      developer: 'Reject loads with unknown group keys or missing versions rather than defaulting them; late failures cost more close days than early ones.',
+    },
   },
 ]

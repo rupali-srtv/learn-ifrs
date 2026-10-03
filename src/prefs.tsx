@@ -12,6 +12,13 @@ interface Prefs {
   setTheme: (t: Theme) => void
   visited: string[]
   markVisited: (id: string) => void
+  /** Last concept page opened, for "continue where you left off". */
+  lastConcept: string | null
+  missionsDone: string[]
+  completeMission: (id: string) => void
+  quizScores: Record<string, { score: number; total: number }>
+  saveQuiz: (id: string, score: number, total: number) => void
+  resetProgress: () => void
 }
 
 const Ctx = createContext<Prefs | null>(null)
@@ -38,6 +45,9 @@ export function PrefsProvider({ children }: { children: ReactNode }) {
   const [depth, setDepthState] = useState<Depth>(() => load('ll.depth', 'explain'))
   const [theme, setThemeState] = useState<Theme>(() => load('ll.theme', 'system'))
   const [visited, setVisited] = useState<string[]>(() => load('ll.visited', []))
+  const [lastConcept, setLastConcept] = useState<string | null>(() => load('ll.last', null))
+  const [missionsDone, setMissionsDone] = useState<string[]>(() => load('ll.missions', []))
+  const [quizScores, setQuizScores] = useState<Record<string, { score: number; total: number }>>(() => load('ll.quiz', {}))
 
   useEffect(() => {
     const root = document.documentElement
@@ -67,13 +77,41 @@ export function PrefsProvider({ children }: { children: ReactNode }) {
       save('ll.theme', t)
     },
     visited,
-    markVisited: (id) =>
+    markVisited: (id) => {
+      setLastConcept(id)
+      save('ll.last', id)
       setVisited((v) => {
         if (v.includes(id)) return v
         const next = [...v, id]
         save('ll.visited', next)
         return next
+      })
+    },
+    lastConcept,
+    missionsDone,
+    completeMission: (id) =>
+      setMissionsDone((m) => {
+        if (m.includes(id)) return m
+        const next = [...m, id]
+        save('ll.missions', next)
+        return next
       }),
+    quizScores,
+    saveQuiz: (id, score, total) =>
+      setQuizScores((q) => {
+        // Keep the best attempt.
+        if (q[id] && q[id].score >= score) return q
+        const next = { ...q, [id]: { score, total } }
+        save('ll.quiz', next)
+        return next
+      }),
+    resetProgress: () => {
+      setVisited([])
+      setLastConcept(null)
+      setMissionsDone([])
+      setQuizScores({})
+      for (const k of ['ll.visited', 'll.last', 'll.missions', 'll.quiz']) save(k, k === 'll.quiz' ? {} : k === 'll.last' ? null : [])
+    },
   }
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
 }

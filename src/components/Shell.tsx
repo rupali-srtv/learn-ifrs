@@ -7,9 +7,10 @@ import { SearchDialog } from './SearchDialog'
 
 const NAV = [
   { to: '/learn', label: 'Learn' },
-  { to: '/sandbox', label: 'Sandbox' },
+  { to: '/lab', label: 'Labs' },
   { to: '/map', label: 'Concept map' },
   { to: '/glossary', label: 'Glossary' },
+  { to: '/progress', label: 'Progress' },
   { to: '/about', label: 'Trust & method' },
 ]
 
@@ -49,7 +50,7 @@ export function Shell({ children }: { children: ReactNode }) {
           </Link>
           <nav className={`nav${menu ? ' open' : ''}`} aria-label="Main">
             {NAV.map((n) => (
-              <NavLink key={n.to} to={n.to} className={({ isActive }) => (isActive ? 'active' : '')}>
+              <NavLink key={n.to} to={n.to} className={({ isActive }) => (isActive || (n.to === '/lab' && loc.pathname === '/sandbox') ? 'active' : '')}>
                 {n.label}
               </NavLink>
             ))}

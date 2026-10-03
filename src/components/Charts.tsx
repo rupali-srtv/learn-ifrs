@@ -155,3 +155,78 @@ export function BuildingBlocks({ inflows, outflows, ra, csm, loss }: { inflows: 
     </svg>
   )
 }
+
+function wrap(text: string, max: number): string[] {
+  const out: string[] = []
+  for (const w of text.split(' ')) {
+    const last = out[out.length - 1]
+    if (last !== undefined && (last + ' ' + w).length <= max) out[out.length - 1] = last + ' ' + w
+    else out.push(w)
+  }
+  return out.slice(0, 3)
+}
+
+export interface Step {
+  label: string
+  value: number
+  /** A total bar drawn from zero rather than a floating step. */
+  total?: boolean
+}
+
+/** Bridge from an opening to a closing balance; increases and decreases float on the running total. */
+export function Waterfall({ steps, title }: { steps: Step[]; title: string }) {
+  const Wd = 720
+  const Hd = 300
+  const m = { l: 64, r: 12, t: 16, b: 64 }
+  let run = 0
+  const bars = steps.map((s) => {
+    const from = s.total ? 0 : run
+    const to = s.total ? s.value : run + s.value
+    run = to
+    return { ...s, from, to }
+  })
+  const ticks = niceTicks(Math.min(0, ...bars.flatMap((b) => [b.from, b.to])), Math.max(0, ...bars.flatMap((b) => [b.from, b.to])))
+  const y0 = ticks[0]
+  const y1 = ticks[ticks.length - 1]
+  const y = (v: number) => m.t + (1 - (v - y0) / (y1 - y0)) * (Hd - m.t - m.b)
+  const band = (Wd - m.l - m.r) / bars.length
+  const bw = Math.min(54, band * 0.62)
+  const many = bars.length > 10
+  return (
+    <svg className="chart-svg" viewBox={`0 0 ${Wd} ${Hd}`} role="img" aria-label={title}>
+      {ticks.map((t) => (
+        <g key={t}>
+          <line x1={m.l} x2={Wd - m.r} y1={y(t)} y2={y(t)} stroke="var(--line)" strokeWidth={t === 0 ? 1.4 : 1} />
+          <text x={m.l - 8} y={y(t) + 4} textAnchor="end" fontSize="11" fill="var(--muted)">{money(t)}</text>
+        </g>
+      ))}
+      {bars.map((b, i) => {
+        const cx = m.l + band * i + band / 2
+        const fill = b.total ? 'var(--chart-1)' : b.value >= 0 ? 'var(--chart-3)' : 'var(--bad)'
+        const top = y(Math.max(b.from, b.to))
+        const h = Math.max(1, Math.abs(y(b.from) - y(b.to)))
+        return (
+          <g key={i}>
+            {i > 0 && <line x1={cx - band + bw / 2} x2={cx - bw / 2} y1={y(b.from)} y2={y(b.from)} stroke="var(--line-strong)" strokeDasharray="3 3" />}
+            <rect x={cx - bw / 2} y={top} width={bw} height={h} fill={fill} rx={2}>
+              <title>{`${b.label}: ${money(b.value)}`}</title>
+            </rect>
+            {Math.abs(b.value) >= 0.5 && (
+              <text x={cx} y={top - 5} textAnchor="middle" fontSize="11" fill="var(--ink)">{money(b.value)}</text>
+            )}
+            <text
+              x={cx}
+              y={Hd - m.b + 16}
+              fontSize="11"
+              fill="var(--muted)"
+              textAnchor={many ? 'end' : 'middle'}
+              transform={many ? `rotate(-35 ${cx} ${Hd - m.b + 16})` : undefined}
+            >
+              {many ? b.label : wrap(b.label, band < 90 ? 10 : 14).map((ln, k) => <tspan key={k} x={cx} dy={k ? 13 : 0}>{ln}</tspan>)}
+            </text>
+          </g>
+        )
+      })}
+    </svg>
+  )
+}

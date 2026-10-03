@@ -2,10 +2,12 @@ import { FOUNDATIONS } from './foundations'
 import { IFRS17 } from './ifrs17'
 import { TAGETIK } from './tagetik'
 import { GLOSSARY } from './glossary'
-import type { Concept, EdgeType, Track } from './types'
+import { QUIZZES } from './quizzes'
+import type { Concept, EdgeType, QuizQuestion, Track } from './types'
 
 export const CONCEPTS: Concept[] = [...FOUNDATIONS, ...IFRS17, ...TAGETIK]
 export const CONCEPT_BY_ID: Record<string, Concept> = Object.fromEntries(CONCEPTS.map((c) => [c.id, c]))
+export const QUIZ_BY_ID: Record<string, QuizQuestion[]> = QUIZZES
 export const GLOSSARY_BY_ID = Object.fromEntries(GLOSSARY.map((g) => [g.id, g]))
 export { GLOSSARY }
 
@@ -21,9 +23,9 @@ export const TRACKS: Track[] = [
     audience: 'No accounting background needed',
     modules: [
       { code: 'A1', title: 'What IFRS is and why it exists', blurb: 'Who writes the rules and why they matter.', concepts: ['what-is-ifrs'] },
-      { code: 'A2', title: 'The Conceptual Framework', blurb: 'Assets, liabilities, recognition and measurement.', concepts: [] },
+      { code: 'A2', title: 'The Conceptual Framework', blurb: 'Assets, liabilities, recognition and measurement.', concepts: ['conceptual-framework'] },
       { code: 'A3', title: 'Reading the financial statements', blurb: 'The primary statements, and what IFRS 18 changes.', concepts: ['financial-statements'] },
-      { code: 'A4', title: 'Standards every insurance learner meets', blurb: 'IFRS 9, 13, 15, 16, IAS 12, 21, 37 in brief.', concepts: [] },
+      { code: 'A4', title: 'Standards every insurance learner meets', blurb: 'IFRS 9, 13, 15, 16, IAS 12, 21, 37 in brief.', concepts: ['key-standards'] },
       { code: 'A5', title: 'Double entry and the journal', blurb: 'Debits, credits and how numbers reach the accounts.', concepts: ['double-entry'] },
     ],
   },
@@ -42,12 +44,12 @@ export const TRACKS: Track[] = [
       { code: 'B7', title: 'Onerous contracts', blurb: 'Day-one losses and the loss component.', concepts: ['onerous-contracts', 'loss-component'] },
       { code: 'B8', title: 'Premium Allocation Approach', blurb: 'The simplified model for short-duration business.', concepts: ['paa'] },
       { code: 'B9', title: 'Variable Fee Approach', blurb: 'Direct participating contracts.', concepts: ['vfa'] },
-      { code: 'B10', title: 'Reinsurance contracts held', blurb: 'Separate measurement and the loss-recovery component.', concepts: [] },
+      { code: 'B10', title: 'Reinsurance contracts held', blurb: 'Separate measurement and the loss-recovery component.', concepts: ['reinsurance-held'] },
       { code: 'B11', title: 'Insurance finance income or expenses', blurb: 'Time value, financial risk and the OCI option.', concepts: ['insurance-finance'] },
       { code: 'B12', title: 'Presentation', blurb: 'Insurance revenue and the insurance service result.', concepts: ['insurance-revenue'] },
       { code: 'B13', title: 'Disclosures', blurb: 'Reconciliations, revenue analysis and CSM release.', concepts: ['disclosures'] },
       { code: 'B14', title: 'Transition', blurb: 'Full, modified retrospective and fair value approaches.', concepts: ['transition'] },
-      { code: 'B15', title: 'Operating IFRS 17', blurb: 'Data, actuarial-finance handshake and close.', concepts: [] },
+      { code: 'B15', title: 'Operating IFRS 17', blurb: 'Data, actuarial-finance handshake and close.', concepts: ['operating-ifrs17'] },
     ],
   },
   {
@@ -56,7 +58,7 @@ export const TRACKS: Track[] = [
     tagline: 'From the standard to a working implementation',
     audience: 'Consultants, developers and finance system owners',
     modules: [
-      { code: 'C1', title: 'Platform foundations', blurb: 'Dimensions, scenarios, processing, workflow and reporting.', concepts: [] },
+      { code: 'C1', title: 'Platform foundations', blurb: 'Dimensions, scenarios, processing, workflow and reporting.', concepts: ['tagetik-platform'] },
       { code: 'C2', title: 'The end-to-end IFRS 17 chain', blurb: 'Data, calculation, accounting, reporting, control.', concepts: ['tagetik-overview'] },
       { code: 'C3', title: 'Design decisions', blurb: 'Group keys, grain, interfaces and mapping.', concepts: ['tagetik-data-model'] },
       { code: 'C4', title: 'Build patterns', blurb: 'CSM, loss component and journal generation.', concepts: ['tagetik-csm-build', 'tagetik-journals'] },

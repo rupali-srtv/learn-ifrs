@@ -72,3 +72,12 @@ export interface GlossaryTerm {
   definition: string
   concept?: string
 }
+
+export interface QuizQuestion {
+  q: string
+  options: string[]
+  /** Index into options of the correct answer. */
+  answer: number
+  /** Why the answer is right, shown after the learner answers. May use [[id]] markup. */
+  why: string
+}

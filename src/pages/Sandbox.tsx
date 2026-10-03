@@ -1,18 +1,23 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { runGmm, type Account, type GmmInputs, type GmmResult, type YearResult } from '../engine/gmm'
 import { PRESETS } from '../engine/presets'
 import {
   componentReconciliation, liabilityReconciliation, revenueAnalysis, ties, type DisclosureTable,
 } from '../engine/disclosures'
-import { BuildingBlocks, Legend, LineChart, StackedBars } from '../components/Charts'
+import { BuildingBlocks, Legend, LineChart, StackedBars, Waterfall, type Step } from '../components/Charts'
+import { CopyCsv } from '../components/CopyCsv'
+import { NumField } from '../components/Fields'
+import { MISSIONS, MISSION_BY_ID, type Mission } from '../engine/missions'
+import { usePrefs } from '../prefs'
 import { money, pct } from '../format'
 import { Icon } from '../components/Icon'
 import { CONCEPT_BY_ID } from '../content'
 
-type Tab = 'overview' | 'rollforward' | 'journals' | 'disclosures'
+type Tab = 'overview' | 'bridge' | 'rollforward' | 'journals' | 'disclosures'
 const TABS: { id: Tab; label: string }[] = [
   { id: 'overview', label: 'Overview' },
+  { id: 'bridge', label: 'CSM bridge' },
   { id: 'rollforward', label: 'Roll-forwards' },
   { id: 'journals', label: 'Journals' },
   { id: 'disclosures', label: 'Disclosures' },
@@ -37,12 +42,35 @@ function resize(a: number[], n: number, fill: number): number[] {
 export function Sandbox() {
   const loc = useLocation()
   const navigate = useNavigate()
-  const [presetId, setPresetId] = useState(PRESETS[0].id)
-  const [inp, setInp] = useState<GmmInputs>(PRESETS[0].inputs)
+  const [params, setParams] = useSearchParams()
+  const mission: Mission | undefined = MISSION_BY_ID[params.get('mission') ?? '']
+  const startPreset = PRESETS.find((p) => p.id === mission?.preset) ?? PRESETS[0]
+  const [presetId, setPresetId] = useState(startPreset.id)
+  const [inp, setInp] = useState<GmmInputs>(startPreset.inputs)
+  // Inputs reset to the mission's starting scenario whenever a different mission is opened.
+  const [loadedFor, setLoadedFor] = useState(mission?.id ?? '')
+  if ((mission?.id ?? '') !== loadedFor) {
+    setLoadedFor(mission?.id ?? '')
+    if (mission) {
+      setPresetId(startPreset.id)
+      setInp(startPreset.inputs)
+    }
+  }
+  const [baseline, setBaseline] = useState<GmmResult | null>(null)
   const fromHash = loc.hash.replace('#', '') as Tab
   const [tab, setTab] = useState<Tab>(TABS.some((t) => t.id === fromHash) ? fromHash : 'overview')
+  // Links into a tab (from a concept page or the home page) can arrive while the simulator is already open.
+  useEffect(() => {
+    if (TABS.some((t) => t.id === fromHash)) setTab(fromHash)
+  }, [fromHash])
   const r = useMemo(() => runGmm(inp), [inp])
   const [yearIdx, setYearIdx] = useState(0)
+  const { missionsDone, completeMission } = usePrefs()
+  const met = !!mission && loadedFor === mission.id && mission.check(r, inp)
+  useEffect(() => {
+    if (mission && met) completeMission(mission.id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mission?.id, met])
 
   useEffect(() => {
     if (yearIdx >= r.years.length) setYearIdx(0)
@@ -101,20 +129,44 @@ export function Sandbox() {
           </select>
         </div>
       </div>
-      {preset && <p className="muted" style={{ marginTop: 10, maxWidth: '80ch' }}>{preset.summary}</p>}
+      {preset && !mission && <p className="muted" style={{ marginTop: 10, maxWidth: '80ch' }}>{preset.summary}</p>}
+      {mission && (
+        <MissionBanner
+          m={mission}
+          met={met}
+          doneBefore={missionsDone.includes(mission.id)}
+          onExit={() => setParams({}, { replace: true })}
+          onRestart={() => choosePreset(mission.preset)}
+          next={MISSIONS.find((x) => !missionsDone.includes(x.id) && x.id !== mission.id)}
+        />
+      )}
 
       <div className="sandbox">
         <Inputs inp={inp} update={update} setYears={setYears} setYearValue={setYearValue} />
 
         <div style={{ minWidth: 0 }}>
           <div className="panel kpis">
-            <Kpi label="PV of premiums" value={money(r.initial.pvInflows)} concept="fulfilment-cash-flows" />
-            <Kpi label="PV of outflows" value={money(r.initial.pvOutflows)} concept="fulfilment-cash-flows" />
-            <Kpi label="Risk adjustment" value={money(r.initial.riskAdjustment)} concept="risk-adjustment" />
+            <Kpi label="PV of premiums" value={r.initial.pvInflows} base={baseline?.initial.pvInflows} concept="fulfilment-cash-flows" />
+            <Kpi label="PV of outflows" value={r.initial.pvOutflows} base={baseline?.initial.pvOutflows} concept="fulfilment-cash-flows" />
+            <Kpi label="Risk adjustment" value={r.initial.riskAdjustment} base={baseline?.initial.riskAdjustment} concept="risk-adjustment" />
             {onerous
-              ? <Kpi label="Day-one loss" value={money(-r.initial.lossComponent)} tone="bad" concept="onerous-contracts" />
-              : <Kpi label="CSM on day one" value={money(r.initial.csm)} tone="good" concept="csm" />}
-            <Kpi label="Lifetime profit" value={money(r.totals.profit)} tone={r.totals.profit >= 0 ? 'good' : 'bad'} concept="insurance-revenue" />
+              ? <Kpi label="Day-one loss" value={-r.initial.lossComponent} base={baseline && -baseline.initial.lossComponent} tone="bad" concept="onerous-contracts" />
+              : <Kpi label="CSM on day one" value={r.initial.csm} base={baseline?.initial.csm} tone="good" concept="csm" />}
+            <Kpi label="Lifetime profit" value={r.totals.profit} base={baseline?.totals.profit} tone={r.totals.profit >= 0 ? 'good' : 'bad'} concept="insurance-revenue" />
+          </div>
+          <div className="baseline-bar">
+            {baseline ? (
+              <>
+                <span className="muted">Comparing with a pinned baseline: differences show under each figure.</span>
+                <button type="button" className="copy-btn" onClick={() => setBaseline(r)}><Icon name="pin" size={13} />Pin current instead</button>
+                <button type="button" className="copy-btn" onClick={() => setBaseline(null)}><Icon name="close" size={13} />Clear baseline</button>
+              </>
+            ) : (
+              <>
+                <span className="muted">Want to see what a change does? Pin these results, then change an input.</span>
+                <button type="button" className="copy-btn" onClick={() => setBaseline(r)}><Icon name="pin" size={13} />Pin as baseline</button>
+              </>
+            )}
           </div>
 
           <div className="tabs" role="tablist" aria-label="Sandbox views">
@@ -126,6 +178,7 @@ export function Sandbox() {
           </div>
           <div className="tab-body" role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
             {tab === 'overview' && <Overview r={r} />}
+            {tab === 'bridge' && <Bridge r={r} />}
             {tab === 'rollforward' && <RollForward r={r} />}
             {tab === 'journals' && <Journals r={r} yearIdx={yearIdx} setYearIdx={setYearIdx} />}
             {tab === 'disclosures' && <Disclosures r={r} yearIdx={yearIdx} setYearIdx={setYearIdx} />}
@@ -136,25 +189,117 @@ export function Sandbox() {
   )
 }
 
-function Kpi({ label, value, tone, concept }: { label: string; value: string; tone?: 'good' | 'bad'; concept: string }) {
+function Kpi({ label, value, base, tone, concept }: { label: string; value: number; base?: number | null; tone?: 'good' | 'bad'; concept: string }) {
+  const d = base == null ? null : value - base
   return (
     <div className={`kpi ${tone ?? ''}`}>
       <div className="label"><Link to={`/concept/${concept}`} style={{ color: 'inherit' }}>{label}</Link></div>
-      <div className="value">{value}</div>
+      <div className="value">{money(value)}</div>
+      {d !== null && (
+        <div className={`delta ${Math.abs(d) < 0.5 ? '' : d > 0 ? 'up' : 'down'}`}>
+          {Math.abs(d) < 0.5 ? 'No change' : `${d > 0 ? '+' : '−'}${money(Math.abs(d))} vs baseline`}
+        </div>
+      )}
     </div>
   )
 }
 
-function NumField({ id, label, value, onChange, step = 1, min, max, suffix, hint }: {
-  id: string; label: string; value: number; onChange: (v: number) => void; step?: number; min?: number; max?: number; suffix?: string; hint?: string
+function MissionBanner({ m, met, doneBefore, onExit, onRestart, next }: {
+  m: Mission; met: boolean; doneBefore: boolean; onExit: () => void; onRestart: () => void; next?: Mission
 }) {
+  const [hint, setHint] = useState(false)
+  useEffect(() => setHint(false), [m.id])
   return (
-    <div className="field">
-      <label htmlFor={id}>{label}{suffix ? ` (${suffix})` : ''}</label>
-      <input id={id} type="number" inputMode="decimal" value={Number.isFinite(value) ? value : 0} step={step} min={min} max={max}
-        onChange={(e) => onChange(e.target.value === '' ? 0 : Number(e.target.value))} />
-      {hint && <span className="hint">{hint}</span>}
-    </div>
+    <section className={`panel mission${met ? ' met' : ''}`} aria-label="Mission">
+      <div className="mission-head">
+        <span className="tag brand"><Icon name="flag" size={12} /> Mission · {m.level}</span>
+        {doneBefore && !met && <span className="tag">Completed before</span>}
+        <div className="row" style={{ marginLeft: 'auto', gap: 8 }}>
+          <button type="button" className="copy-btn" onClick={onRestart}>Restart</button>
+          <button type="button" className="copy-btn" onClick={onExit}><Icon name="close" size={13} />Leave mission</button>
+        </div>
+      </div>
+      <h3>{m.title}</h3>
+      <p>{m.goal}</p>
+      <div className="mission-status" role="status">
+        {met ? (
+          <><Icon name="check" /> <strong>Goal met.</strong></>
+        ) : (
+          <><span className="pulse" aria-hidden="true" /> Not yet: change the inputs on the left. Results update as you type.</>
+        )}
+      </div>
+      {met ? (
+        <div className="mission-lesson">
+          <p>{m.lesson}</p>
+          <div className="row" style={{ marginTop: 10 }}>
+            <Link to={`/concept/${m.concept}`}>Read: {CONCEPT_BY_ID[m.concept]?.title}</Link>
+            {next ? <Link className="btn btn-primary" to={`/sandbox?mission=${next.id}`}>Next mission: {next.title}</Link> : <Link className="btn btn-primary" to="/lab">All missions done. Back to Labs</Link>}
+          </div>
+        </div>
+      ) : (
+        <div style={{ marginTop: 8 }}>
+          {hint ? <p className="muted"><strong>Hint.</strong> {m.hint}</p> : <button type="button" className="link-btn" onClick={() => setHint(true)}>Show a hint</button>}
+        </div>
+      )}
+    </section>
+  )
+}
+
+function Bridge({ r }: { r: GmmResult }) {
+  const [view, setView] = useState<number>(-1)
+  const sum = (f: (y: YearResult) => number) => r.years.reduce((a, y) => a + f(y), 0)
+  const y = view >= 0 ? r.years[Math.min(view, r.years.length - 1)] : null
+  const steps: Step[] = y
+    ? [
+        { label: 'Opening CSM', value: y.open.csm, total: true },
+        ...(y.year === 1 ? [{ label: 'New business', value: r.initial.csm }] : []),
+        { label: 'Interest accreted', value: y.csmAccretion },
+        { label: 'Changes in estimates', value: y.csmAdjustedByChange },
+        { label: 'Released for service', value: -y.csmRelease },
+        { label: 'Closing CSM', value: y.close.csm, total: true },
+      ]
+    : [
+        { label: 'New business', value: r.initial.csm },
+        { label: 'Interest accreted', value: sum((x) => x.csmAccretion) },
+        { label: 'Changes in estimates', value: sum((x) => x.csmAdjustedByChange) },
+        ...r.years.filter((x) => x.inCoverage).map((x) => ({ label: `Y${x.year} release`, value: -x.csmRelease })),
+        { label: 'End of cover', value: r.years[r.years.length - 1].close.csm, total: true },
+      ]
+  const lcSteps: Step[] = [
+    { label: 'Day-one loss', value: r.initial.lossComponent },
+    { label: 'Losses on changes', value: sum((x) => x.changeLoss) },
+    { label: 'Allocated to revenue', value: -sum((x) => x.lossComponentAllocation) },
+    { label: 'Reversed', value: -sum((x) => x.lossReversal) },
+    { label: 'End of cover', value: r.years[r.years.length - 1].close.lossComponent, total: true },
+  ]
+  const hasLc = r.years.some((x) => x.open.lossComponent > 0.5 || x.close.lossComponent > 0.5) || r.initial.lossComponent > 0.5
+  const totalReleased = sum((x) => x.csmRelease)
+  return (
+    <>
+      <div className="year-pick" role="group" aria-label="Bridge period">
+        <button aria-pressed={view === -1} onClick={() => setView(-1)}>Whole life</button>
+        {r.years.filter((x) => x.inCoverage).map((x, i) => (
+          <button key={x.year} aria-pressed={view === i} onClick={() => setView(i)}>Year {x.year}</button>
+        ))}
+      </div>
+      <p className="muted" style={{ maxWidth: '75ch' }}>
+        {y
+          ? `How the CSM moved in year ${y.year}, in the order IFRS 17.44 requires: interest first, then changes for future service, then the release for the year.`
+          : `Every unit of profit the CSM holds on day one, plus interest and changes in estimates, is released to profit over the coverage period. ${totalReleased > 0.5 ? `Total released: ${money(totalReleased)}.` : 'Here nothing is released because there is no CSM.'}`}
+      </p>
+      <div className="panel chart-box">
+        <h4>{y ? `CSM bridge, year ${y.year}` : 'CSM bridge, whole life of the group'}</h4>
+        <div className="sub">Green adds to the CSM, red reduces it, blue bars are balances</div>
+        <Waterfall title="CSM bridge" steps={steps} />
+      </div>
+      {hasLc && (
+        <div className="panel chart-box" style={{ marginTop: 16 }}>
+          <h4><Link to="/concept/loss-component">Loss component</Link>, whole life of the group</h4>
+          <div className="sub">The loss component is tracked memo-style inside the LRC and unwinds through insurance service expenses (IFRS 17.49–52)</div>
+          <Waterfall title="Loss component bridge" steps={lcSteps} />
+        </div>
+      )}
+    </>
   )
 }
 
@@ -297,7 +442,18 @@ function Overview({ r }: { r: GmmResult }) {
 
       <div className="table-wrap">
         <table className="data">
-          <caption><h4>Statement of profit or loss</h4><div className="refline"><span className="chip">IFRS 17.80</span> Insurance service result is shown separately from insurance finance expenses</div></caption>
+          <caption><h4>Statement of profit or loss</h4><div className="refline"><span className="chip">IFRS 17.80</span> Insurance service result is shown separately from insurance finance expenses
+            <CopyCsv rows={() => [
+              ['Line', ...r.years.map(shortLabel), 'Total'],
+              ...([
+                ['Insurance revenue', r.years.map((y) => y.insuranceRevenue)],
+                ['Insurance service expenses', r.years.map((y) => -y.insuranceServiceExpense)],
+                ['Insurance service result', r.years.map((y) => y.insuranceServiceResult)],
+                ['Insurance finance expenses', r.years.map((y) => -y.insuranceFinanceExpense)],
+                ['Insurance result', r.years.map((y) => y.profit)],
+              ] as [string, number[]][]).map(([l, v]) => [l, ...v, v.reduce((a, b) => a + b, 0)]),
+            ]} />
+          </div></caption>
           <thead>
             <tr><th scope="col">Line</th>{r.years.map((y) => <th scope="col" key={y.year}>{shortLabel(y)}</th>)}<th scope="col">Total</th></tr>
           </thead>
@@ -359,7 +515,9 @@ function YearTable({ title, refs, concept, r, rows }: {
       <table className="data">
         <caption>
           <h4><Link to={`/concept/${concept}`}>{title}</Link></h4>
-          <div className="refline"><span className="chip">{refs}</span></div>
+          <div className="refline"><span className="chip">{refs}</span>
+            <CopyCsv rows={() => [['Movement', ...r.years.map(shortLabel)], ...rows.map((row) => [row.label, ...r.years.map(row.get)])]} />
+          </div>
         </caption>
         <thead><tr><th scope="col">Movement</th>{r.years.map((y) => <th scope="col" key={y.year}>{shortLabel(y)}</th>)}</tr></thead>
         <tbody>
@@ -480,6 +638,7 @@ function DisclosureView({ t }: { t: DisclosureTable }) {
             {ok !== null && (
               <span className={`tie ${ok ? '' : 'fail'}`}><Icon name={ok ? 'check' : 'warn'} size={13} />{ok ? 'Opening plus movements equals closing' : 'Does not tie'}</span>
             )}
+            <CopyCsv rows={() => [['Line', ...t.columns], ...t.rows.map((row) => [row.label, ...row.values])]} />
           </div>
         </caption>
         <thead><tr><th scope="col">Line</th>{t.columns.map((c) => <th scope="col" key={c}>{c}</th>)}</tr></thead>

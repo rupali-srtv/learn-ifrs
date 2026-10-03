@@ -11,6 +11,11 @@ import { ConceptMap } from './pages/ConceptMap'
 import { Glossary } from './pages/Glossary'
 import { About } from './pages/About'
 import { NotFound } from './pages/NotFound'
+import { Progress } from './pages/Progress'
+import { LabHub } from './pages/labs/LabHub'
+import { PaaLab } from './pages/labs/PaaLab'
+import { DiscountLab } from './pages/labs/DiscountLab'
+import { PipelineLab } from './pages/labs/PipelineLab'
 import './styles/app.css'
 
 // Hash routing keeps every page addressable from a static host with no server rewrites.
@@ -28,6 +33,11 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/learn/:trackId" element={<TrackPage />} />
             <Route path="/concept/:id" element={<ConceptPage />} />
             <Route path="/sandbox" element={<Sandbox />} />
+            <Route path="/lab" element={<LabHub />} />
+            <Route path="/lab/paa" element={<PaaLab />} />
+            <Route path="/lab/discounting" element={<DiscountLab />} />
+            <Route path="/lab/pipeline" element={<PipelineLab />} />
+            <Route path="/progress" element={<Progress />} />
             <Route path="/map" element={<ConceptMap />} />
             <Route path="/glossary" element={<Glossary />} />
             <Route path="/about" element={<About />} />

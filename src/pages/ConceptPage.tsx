@@ -1,8 +1,10 @@
 import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import {
-  CONCEPT_BY_ID, CONTENT_STATUS, CONTENT_VERSION, EDGE_LABEL, TRACK_BY_ID, relatedOf, type Depth,
+  CONCEPT_BY_ID, CONTENT_STATUS, CONTENT_VERSION, EDGE_LABEL, QUIZ_BY_ID, TRACK_BY_ID, relatedOf, type Depth,
 } from '../content'
+import { Quiz } from '../components/Quiz'
+import { MISSIONS } from '../engine/missions'
 import type { EdgeType } from '../content/types'
 import { RichText, Inline } from '../components/RichText'
 import { usePrefs } from '../prefs'
@@ -25,6 +27,19 @@ const INBOUND_LABEL: Partial<Record<EdgeType, string>> = {
   'requires-data': 'Supplies data to',
 }
 
+/** Labs that demonstrate a concept beyond the measurement simulator. */
+const LAB_FOR: Record<string, { to: string; title: string; text: string }> = {
+  paa: { to: '/lab/paa', title: 'Compare the PAA with the GMM', text: 'Measure one group both ways and test whether the PAA is a reasonable approximation.' },
+  discounting: { to: '/lab/discounting', title: 'Try the discounting lab', text: 'Discount factors, interest unwinding and what happens when rates move.' },
+  'insurance-finance': { to: '/lab/discounting', title: 'Try the discounting lab', text: 'See finance expenses split between profit or loss and OCI.' },
+  'tagetik-overview': { to: '/lab/pipeline', title: 'Walk the implementation pipeline', text: 'Load, validate, calculate, post, reconcile and drill back for one period.' },
+  'tagetik-data-model': { to: '/lab/pipeline', title: 'Break the data, see the controls', text: 'Inject data errors and watch which validation rule catches each one.' },
+  'tagetik-journals': { to: '/lab/pipeline', title: 'Trace a journal to its source', text: 'Follow a ledger line back to its movement record and source rows.' },
+  'tagetik-testing': { to: '/lab/pipeline', title: 'See reconciliations in action', text: 'Six tie-outs between data, movements, ledger and disclosures.' },
+}
+
+const words = (xs: string[]) => xs.join(' ').split(/\s+/).length
+
 const SANDBOX_LABEL = {
   overview: 'See it in the sandbox',
   rollforward: 'Watch it roll forward',
@@ -39,7 +54,8 @@ export function ConceptPage() {
 
   useEffect(() => {
     if (c) markVisited(c.id)
-  }, [c, markVisited])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [c?.id])
 
   if (!c) return <NotFound />
   const track = TRACK_BY_ID[c.track]
@@ -59,6 +75,10 @@ export function ConceptPage() {
   }
 
   const body = depth === 'explain' ? c.explain : depth === 'apply' ? c.apply : c.implement
+  const minutes = Math.max(1, Math.round((words(body) + words([c.summary])) / 200))
+  const lab = LAB_FOR[c.id]
+  const missions = MISSIONS.filter((m) => m.concept === c.id)
+  const quiz = QUIZ_BY_ID[c.id]
 
   return (
     <>
@@ -87,7 +107,7 @@ export function ConceptPage() {
         </aside>
 
         <article className="concept-main">
-          <div className="eyebrow">Module {c.module} · {module?.title}</div>
+          <div className="eyebrow">Module {c.module} · {module?.title} · {minutes} min read</div>
           <h1 className="concept-title">{c.title}</h1>
           <p className="summary"><Inline text={c.summary} /></p>
 
@@ -127,6 +147,28 @@ export function ConceptPage() {
               <Link className="btn btn-primary" to={`/sandbox#${c.sandbox}`}>Open sandbox <Icon name="arrow" /></Link>
             </div>
           )}
+
+          {lab && (
+            <div className="panel try-box">
+              <div>
+                <strong>{lab.title}</strong>
+                <div className="muted" style={{ fontSize: 'var(--step--1)' }}>{lab.text}</div>
+              </div>
+              <Link className="btn btn-primary" to={lab.to}>Open lab <Icon name="arrow" /></Link>
+            </div>
+          )}
+
+          {missions.length > 0 && (
+            <div className="panel try-box" style={{ background: 'var(--mark-soft)' }}>
+              <div>
+                <strong>Mission: {missions[0].title}</strong>
+                <div className="muted" style={{ fontSize: 'var(--step--1)' }}>{missions[0].goal}</div>
+              </div>
+              <Link className="btn btn-ghost" to={`/sandbox?mission=${missions[0].id}`}><Icon name="flag" /> Take the mission</Link>
+            </div>
+          )}
+
+          {quiz && quiz.length > 0 && <Quiz key={c.id} conceptId={c.id} questions={quiz} />}
 
           <nav className="pager" aria-label="Next and previous">
             {prev ? <Link to={`/concept/${prev.id}`}><small>Previous</small>{prev.title}</Link> : <span />}
