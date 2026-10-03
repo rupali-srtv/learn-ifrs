@@ -1,4 +1,4 @@
-# Ledgerline: IFRS 17 & Tagetik learning portal (prototype)
+# Ledgerline: IFRS 17 & Tagetik learning portal
 
 A learning portal that teaches IFRS from zero, goes deep on IFRS 17, and connects every concept to its
 calculation, journal entry, disclosure and CCH Tagetik implementation.
@@ -38,9 +38,12 @@ Tagetik track pages describe implementation patterns and must be validated again
 
 ## Status
 
-Content version 0.1, draft pending independent technical review. See the product plan for the roadmap:
-PAA and VFA in the sandbox, remaining modules, assessments and CPD certificates, then enterprise features
-(SSO, LMS export, firm workspaces).
+Version 1.0 (3 October 2026). Every page, glossary entry, quiz question and lab explanation was fact-checked
+against IFRS 17 as amended June 2020 and December 2021, and 54 corrections were made. Sign-off by an independent
+human expert is still pending; until then the portal is for learning, not a basis for accounting conclusions.
+
+Roadmap: VFA in the sandbox, assessments and CPD certificates, then enterprise features (SSO, LMS export,
+firm workspaces).
 
 ## Deploy for free (GitHub Pages)
 

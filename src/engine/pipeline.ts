@@ -145,7 +145,7 @@ export function validate(rows: SourceRow[], group: Group, control: Record<FlowTy
     {
       id: 'V05',
       rule: 'Currency exists in the currency master',
-      why: 'Unknown currencies cannot be translated or grouped (IAS 21).',
+      why: 'Unknown currencies cannot be translated into the functional currency (IAS 21; IFRS 17.30 treats the group as a monetary item).',
       failing: rows.filter((x) => !CURRENCIES.has(x.currency)).map((x) => x.rowId),
       blocking: true,
     },

@@ -87,7 +87,7 @@ export const QUIZZES: Record<string, QuizQuestion[]> = {
         'Insurers could not present a balance sheet under IFRS 4',
       ],
       answer: 0,
-      why: 'IFRS 4 was an interim standard that largely grandfathered existing practices. IFRS 17 introduced one consistent measurement model (IFRS 17.1, IN4–IN8).',
+      why: 'IFRS 4 was an interim standard that largely grandfathered existing practices. IFRS 17 introduced one consistent measurement model (IFRS 17.1; the Introduction to IFRS 17 issued in May 2017).',
     },
     {
       q: 'Which of these is a change IFRS 17 made compared with typical IFRS 4 practice?',
@@ -181,7 +181,7 @@ export const QUIZZES: Record<string, QuizQuestion[]> = {
         'So that losses on onerous contracts are not offset by profits on other contracts',
       ],
       answer: 3,
-      why: 'IFRS 17.16 requires portfolios to be divided by profitability at initial recognition so that losses are recognised promptly rather than absorbed by the CSM of profitable contracts.',
+      why: 'IFRS 17.16 requires portfolios to be divided by profitability at initial recognition. The Basis for Conclusions explains the aim: losses on onerous contracts are recognised promptly rather than absorbed by the CSM of profitable contracts.',
     },
   ],
 
@@ -573,7 +573,7 @@ export const QUIZZES: Record<string, QuizQuestion[]> = {
         'Compare the PAA LRC with the fulfilment cash flows for the remaining coverage and recognise any excess as a loss',
       ],
       answer: 3,
-      why: 'IFRS 17.57–58: the entity assumes no contracts are onerous unless facts and circumstances indicate otherwise; if they do, the excess of the fulfilment cash flows over the PAA LRC is recognised as a loss. See [[onerous-contracts]].',
+      why: 'IFRS 17.18 and 57–58: the entity assumes no contracts are onerous unless facts and circumstances indicate otherwise; if they do, the excess of the fulfilment cash flows over the PAA LRC is recognised as a loss. See [[onerous-contracts]].',
     },
   ],
 
@@ -629,7 +629,7 @@ export const QUIZZES: Record<string, QuizQuestion[]> = {
         'In report layouts',
       ],
       answer: 1,
-      why: 'The measurement model is a policy decision per portfolio (IFRS 17.29, 45, 53). Holding it as governed configuration keeps policy separate from logic. See [[insurance-contract]].',
+      why: 'The measurement model follows from eligibility and policy choices: the VFA applies where contracts meet IFRS 17.B101, and the PAA is an option for groups that qualify (IFRS 17.29, 45, 53). Holding it as governed configuration keeps policy separate from logic. See [[insurance-contract]].',
     },
     {
       q: 'A finance team changes its coverage unit definition for one portfolio. In a well-designed implementation, what is the expected impact?',

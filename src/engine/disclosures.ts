@@ -26,7 +26,7 @@ export function liabilityReconciliation(y: YearResult): DisclosureTable {
   return {
     id: 'lrc-lic',
     title: 'Reconciliation of insurance contract liabilities',
-    reference: 'IFRS 17.100, 103',
+    reference: 'IFRS 17.100, 103, 105',
     columns: ['LRC excl. loss component', 'Loss component', 'LIC', 'Total'],
     rows: [
       row('Opening balance', y.open.lrc - y.open.lossComponent, y.open.lossComponent, y.open.lic, undefined, 'balance'),
@@ -56,7 +56,13 @@ export function componentReconciliation(r: GmmResult, y: YearResult): Disclosure
     rows.push(row('Contracts initially recognised', r.initial.fulfilmentCashFlows, r.initial.riskAdjustment, r.initial.csm, 'gmm'))
   }
   if (y.changeInPv !== 0) {
-    rows.push(row('Changes in estimates relating to future service', y.changeInPv, y.changeInRa, y.csmAdjustedByChange, 'csm'))
+    // IFRS 17.104(a): changes that adjust the CSM are shown apart from those that do not (onerous losses and reversals).
+    // The PV and risk adjustment parts are split in proportion to the total change.
+    const d = y.changeInPv + y.changeInRa
+    const notCsm = y.changeLoss - y.lossReversal
+    const k = Math.abs(d) > 1e-12 ? (d - notCsm) / d : 0
+    rows.push(row('Changes in estimates that adjust the CSM', y.changeInPv * k, y.changeInRa * k, y.csmAdjustedByChange, 'csm'))
+    rows.push(row('Changes in estimates that do not adjust the CSM', y.changeInPv * (1 - k), y.changeInRa * (1 - k), 0, 'onerous-contracts'))
   }
   rows.push(
     row('CSM recognised for services provided', 0, 0, -y.csmRelease, 'coverage-units'),
@@ -71,7 +77,7 @@ export function componentReconciliation(r: GmmResult, y: YearResult): Disclosure
   return {
     id: 'components',
     title: 'Reconciliation of measurement components',
-    reference: 'IFRS 17.101, 104',
+    reference: 'IFRS 17.101, 104, 105',
     columns: ['PV of future cash flows', 'Risk adjustment', 'CSM', 'Total'],
     rows: rows.filter((x) => x.kind === 'balance' || x.values.some((v) => Math.abs(v) > 1e-9)),
   }
@@ -84,7 +90,7 @@ export function revenueAnalysis(y: YearResult): DisclosureTable {
   return {
     id: 'revenue',
     title: 'Analysis of insurance revenue',
-    reference: 'IFRS 17.106, B124',
+    reference: 'IFRS 17.106, B124–B125',
     columns: ['Amount'],
     rows: [
       row('Expected claims for the period', a.expectedClaims, 'insurance-revenue'),

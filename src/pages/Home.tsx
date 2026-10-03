@@ -151,7 +151,7 @@ export function Home() {
             <p>Engine checks prove lifetime profit equals net cash and every reconciliation ties.</p>
           </div>
           <div>
-            <strong>Reviewed and versioned</strong>
+            <strong>Review status and versioning</strong>
             <p>Each page shows its review status, content version and the release it applies to.</p>
           </div>
           <div>

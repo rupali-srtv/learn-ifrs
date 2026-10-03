@@ -77,7 +77,7 @@ export function Shell({ children }: { children: ReactNode }) {
       <footer className="footer">
         <div className="footer-inner">
           <div>
-            Ledgerline prototype · content {CONTENT_VERSION} · {CONTENT_STATUS}.
+            Ledgerline · content {CONTENT_VERSION} · {CONTENT_STATUS}.
           </div>
           <div>
             Educational material, not professional advice. Always refer to the IFRS Accounting Standards issued by the IFRS

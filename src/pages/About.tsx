@@ -9,7 +9,7 @@ export function About() {
         <h1 style={{ marginTop: 8 }}>How this content earns reliance</h1>
         <p className="hero-lede">
           Professional teams can rely on training material only when every statement is traceable, reviewed and current. This page
-          sets out how Ledgerline is written, checked and versioned, and what the prototype does and does not yet cover.
+          sets out how Ledgerline is written, checked and versioned, and what this version does and does not yet cover.
         </p>
       </div>
 
@@ -20,11 +20,12 @@ export function About() {
 
       <section>
         <h2>Editorial process</h2>
+        <p>The intended process, which content must pass before it leaves draft:</p>
         <ol>
           <li><b>Author.</b> A qualified specialist drafts each page, tying every claim to a paragraph of the standard.</li>
           <li><b>Technical review.</b> A second, independent specialist checks accuracy and recalculates every example.</li>
           <li><b>Editorial review.</b> Plain-language and accessibility check against the house style.</li>
-          <li><b>Publish with metadata.</b> Author, reviewer, review date, standard version and Tagetik release are shown on the page.</li>
+          <li><b>Publish with metadata.</b> Review status, content version and the standard or Tagetik release the page applies to are shown on the page; author, reviewer and review date will be added once review is complete.</li>
           <li><b>Monitor.</b> IASB amendments and IFRS Interpretations Committee agenda decisions trigger re-review of every connected page.</li>
         </ol>
       </section>
@@ -44,6 +45,8 @@ export function About() {
           <li>one flat discount rate, used as both current and locked-in rate;</li>
           <li>premiums, expenses and acquisition cash flows at the start of each year; claims at year end, with an optional share paid a year later;</li>
           <li>the risk adjustment is a fixed share of the present value of claims and is not split into a finance component (IFRS 17.81);</li>
+          <li>the systematic allocation to the loss component covers expected claims, expenses and the risk adjustment release, but not insurance finance expenses (IFRS 17.51(c));</li>
+          <li>acquisition cash flows are recovered evenly over the coverage years (passage of time, IFRS 17.B125);</li>
           <li>no OCI option, reinsurance, investment components or foreign currency.</li>
         </ul>
       </section>

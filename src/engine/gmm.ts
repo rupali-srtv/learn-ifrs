@@ -182,7 +182,6 @@ export function runGmm(inp: GmmInputs): GmmResult {
   const v = 1 / (1 + r)
   const s = inp.settlementLag
   const est = inp.claims.slice(0, N).map((c) => c ?? 0)
-  const cuTotal = sum(inp.coverageUnits.slice(0, N))
   const change = inp.assumptionChange && inp.assumptionChange.year >= 1 && inp.assumptionChange.year < N
     ? inp.assumptionChange
     : null
@@ -269,7 +268,8 @@ export function runGmm(inp: GmmInputs): GmmResult {
     const cuRemaining = sum(inp.coverageUnits.slice(y - 1, N))
     const csmRelease = inCoverage && cuRemaining > 0 ? csmPre * (inp.coverageUnits[y - 1] / cuRemaining) : 0
     const csmClose = csmPre - csmRelease
-    const acquisitionAmortisation = inCoverage && cuTotal > 0 ? inp.acquisition * (inp.coverageUnits[y - 1] / cuTotal) : 0
+    // Recovery of acquisition cash flows is allocated on the basis of the passage of time (IFRS 17.B125), not coverage units.
+    const acquisitionAmortisation = inCoverage ? inp.acquisition / N : 0
 
     // Incurred claims and the liability for incurred claims
     const actualClaims = expClaims * (inCoverage ? inp.actualClaimsFactor[y - 1] ?? 1 : 0)

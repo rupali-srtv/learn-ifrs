@@ -12,8 +12,8 @@ export const GLOSSARY_BY_ID = Object.fromEntries(GLOSSARY.map((g) => [g.id, g]))
 export { GLOSSARY }
 
 /** Content version shown on every page; bump on each editorial release. */
-export const CONTENT_VERSION = '0.1 (prototype)'
-export const CONTENT_STATUS = 'Draft: pending independent technical review'
+export const CONTENT_VERSION = '1.0'
+export const CONTENT_STATUS = 'Fact-checked against IFRS 17 as amended June 2020 and December 2021; independent expert sign-off pending'
 
 export const TRACKS: Track[] = [
   {

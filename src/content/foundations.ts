@@ -18,13 +18,13 @@ export const FOUNDATIONS: Concept[] = [
     apply: [
       'Standards sit under the [[conceptual-framework|Conceptual Framework]], which defines the building blocks of financial statements: assets, liabilities, equity, income and expenses. When a standard is silent, preparers fall back on the Framework and on IAS 8.',
       'Standards evolve through a due-process cycle: research, discussion paper, exposure draft, final standard, and post-implementation review. The IFRS Interpretations Committee answers narrower application questions through agenda decisions, which practitioners treat as highly persuasive.',
-      'Local endorsement matters. The EU, for example, endorses each standard and may adopt carve-outs, such as the optional exemption from annual cohorts in IFRS 17.',
+      'Local endorsement matters. The EU, for example, endorses each standard and may adopt carve-outs, such as the optional exemption from the IFRS 17 annual cohort requirement for intergenerationally-mutualised and cash flow matched contracts.',
     ],
     implement: [
       'In a consolidation and reporting platform such as CCH Tagetik, accounting standards show up as configuration: the chart of accounts, the reporting scenarios (for example, a statutory IFRS ledger alongside a local GAAP or Solvency II view), and the rules that turn source data into reported numbers.',
       'A good implementation keeps a clear line from each reported number back to the standard requirement it satisfies. The [[tagetik-overview|Tagetik track]] shows how.',
     ],
-    refs: ['Conceptual Framework 1.1–1.2', 'IAS 8.10–8.12'],
+    refs: ['Conceptual Framework SP1.1–SP1.2', 'IAS 8.10–8.12'],
     links: [
       { type: 'builds-on', to: 'financial-statements' },
       { type: 'contrasts-with', to: 'ifrs17-why' },
@@ -44,7 +44,7 @@ export const FOUNDATIONS: Concept[] = [
       '- A liability is a present obligation of the entity to transfer an economic resource as a result of past events.',
       '- Equity is what is left: assets minus liabilities.',
       '- Income is an increase in assets or decrease in liabilities that increases equity, other than contributions from owners. Expenses are the mirror image.',
-      'For an insurer, the promise to pay future claims is a present obligation created by issuing the contract. That is why insurance contracts sit on the balance sheet as liabilities long before any claim happens.',
+      'For an insurer, the promise to provide cover and pay future claims is a present obligation arising from the contract. That is why insurance contracts sit on the balance sheet as liabilities long before any claim happens.',
       '> Income and expenses are defined through changes in assets and liabilities. Get the liability right and profit follows. IFRS 17 is built exactly this way: revenue and expenses come out of movements in the [[lrc|LRC]] and [[lic|LIC]].',
     ],
     apply: [
@@ -119,7 +119,7 @@ export const FOUNDATIONS: Concept[] = [
     ],
     lenses: {
       auditor: 'Check that IFRS 9 classification and the IFRS 17 OCI option were considered together and that the rationale for any fair value designation is documented.',
-      actuary: 'Discount rate choices under IFRS 17 and asset valuations under IFRS 9 and IFRS 13 should be consistent with observable market prices for financial variables (IFRS 17.33).',
+      actuary: 'Discount rate choices under IFRS 17 and asset valuations under IFRS 9 and IFRS 13 should be consistent with observable market prices for financial variables (IFRS 17.33(b) and 17.36).',
     },
   },
   {

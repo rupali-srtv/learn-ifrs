@@ -30,7 +30,7 @@ export const TAGETIK: Concept[] = [
       '- Scenarios separate actual data from actuarial projections and keep current, prior and locked-in assumption sets apart, so an analysis of change compares like with like.',
       '- Periods carry both the reporting period and, for projected cash flows, the projection period. Keeping these as distinct axes avoids the classic confusion between when a number was reported and when the cash is expected.',
       '- Metadata hierarchies map detailed accounts to presentation lines. Changing presentation, for example to IFRS 18, should mean changing hierarchies and mappings, not calculation rules.',
-      'Granular contract and cash flow data volumes are much larger than a typical consolidation. Tagetik offers analytical, high-volume data structures for this kind of detail (marketed as an analytical workspace in some releases); the pattern is to calculate on granular data there and pass aggregated, group-level results into the financial model.',
+      'Granular contract and cash flow data volumes are much larger than a typical consolidation. Tagetik offers high-volume analytical data structures for this kind of detail (publicly marketed as the Analytic Information Hub); the pattern is to calculate on granular data there and pass aggregated, group-level results into the financial model.',
     ],
     implement: [
       'Patterns that hold regardless of release:',
@@ -105,7 +105,7 @@ export const TAGETIK: Concept[] = [
       'Dimensions commonly needed for IFRS 17:',
       '- Legal entity and reporting currency',
       '- Portfolio, profitability bucket and cohort (together the group key)',
-      '- Measurement model (GMM, PAA, VFA) and contract type (direct, reinsurance held)',
+      '- Measurement model (GMM, PAA, VFA) and contract type (insurance contracts issued, reinsurance contracts held)',
       '- Cash flow type (premium, claim, expense, acquisition, investment component)',
       '- Projection period and reporting period',
       '- Assumption version (current, prior, locked-in) for the analysis of change',
@@ -211,10 +211,10 @@ export const TAGETIK: Concept[] = [
       'A reconciliation is just the movements of a balance, grouped into the lines the standard asks for.',
     ],
     apply: [
-      'Map each movement type to a disclosure line once, for each of the reconciliations in IFRS 17.100–109. Check that every movement maps to exactly one line, and that each reconciliation ties to the balance sheet.',
+      'Map each movement type to a disclosure line once, for each of the reconciliations in IFRS 17.100–105A. Check that every movement maps to exactly one line, and that each reconciliation ties to the balance sheet.',
     ],
     implement: [
-      'Build automated tie-out checks into the close: opening equals prior closing, closing equals balance sheet, revenue analysis equals income statement revenue. Present failures in the workflow before reports are released.',
+      'Build automated tie-out checks into the close: opening equals prior closing, closing equals balance sheet, revenue analysis equals income statement revenue for contracts not measured under the PAA. Present failures in the workflow before reports are released.',
     ],
     refs: ['IFRS 17.98–109'],
     links: [
@@ -230,7 +230,7 @@ export const TAGETIK: Concept[] = [
     module: 'C6',
     kind: 'tagetik',
     summary:
-      'IFRS 17 implementations are proven through layered testing: unit tests per calculation rule, end-to-end tests per group, and parallel runs over several closes before go-live. Each layer produces evidence auditors will ask for.',
+      'IFRS 17 implementations are proven through layered testing: unit tests per calculation rule, end-to-end tests per group, and parallel runs over several closes before go-live. Each layer produces evidence auditors will ask for. The methods and judgements validated here are also what IFRS 17.117 requires an entity to disclose.',
     explain: [
       'Testing answers three questions: does each step calculate correctly, do the steps together produce the right balances, and does the full close run on time with real data?',
     ],
@@ -244,7 +244,7 @@ export const TAGETIK: Concept[] = [
     implement: [
       'Keep tests as a living asset after go-live. Every assumption change, release upgrade or new product should rerun the suite before the next close.',
     ],
-    refs: ['IFRS 17.117'],
+    refs: ['IFRS 17.117–120'],
     links: [
       { type: 'builds-on', to: 'tagetik-csm-build' },
       { type: 'builds-on', to: 'tagetik-disclosures' },

@@ -4,7 +4,7 @@
  *
  * Assumptions, stated in the lab:
  *   - no significant financing component, so the LRC is not adjusted for the time value of money (IFRS 17.56)
- *   - revenue is the expected premium receipts allocated on the basis of coverage units (IFRS 17.B126)
+ *   - revenue is the expected premium receipts allocated on the basis of the passage of time (IFRS 17.B126); the lab uses the coverage units as that pattern
  *   - acquisition cash flows are either amortised over coverage or expensed when paid (IFRS 17.59(a))
  *   - the LIC is measured exactly as under the GMM (discounted, with a risk adjustment)
  *   - the group is not onerous; the lab flags when the GMM shows a day-one loss

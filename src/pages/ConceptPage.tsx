@@ -200,7 +200,7 @@ export function ConceptPage() {
             <div className="review">
               <span><b>Status:</b> {CONTENT_STATUS}</span>
               <span><b>Content version:</b> {CONTENT_VERSION}</span>
-              <span><b>Applies to:</b> {c.track === 'C' ? 'CCH Tagetik IFRS 17 solution (release to be validated)' : c.track === 'B' ? 'IFRS 17 as amended June 2020' : 'IFRS Accounting Standards'}</span>
+              <span><b>Applies to:</b> {c.track === 'C' ? 'CCH Tagetik IFRS 17 solution (release to be validated)' : c.track === 'B' ? 'IFRS 17 as amended June 2020 and December 2021' : 'IFRS Accounting Standards'}</span>
             </div>
           </div>
         </aside>

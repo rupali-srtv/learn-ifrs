@@ -26,7 +26,7 @@ export const IFRS17: Concept[] = [
     implement: [
       'IFRS 17 is as much a data and process change as an accounting one. It needs cash flow projections from actuarial models at group-of-contracts level, a calculation engine for the CSM and loss components, an accounting engine for journals, and a reporting layer for disclosures. The [[tagetik-overview|Tagetik track]] follows that chain end to end.',
     ],
-    refs: ['IFRS 17.1', 'IFRS 17.C1', 'IFRS 17.IN4–IN8'],
+    refs: ['IFRS 17.1', 'IFRS 17.C1', 'IFRS 17 Introduction (May 2017)'],
     links: [
       { type: 'builds-on', to: 'what-is-ifrs' },
       { type: 'measured-by', to: 'gmm' },
@@ -43,7 +43,7 @@ export const IFRS17: Concept[] = [
       'An insurance contract is one where the insurer accepts significant insurance risk by agreeing to compensate the policyholder if an uncertain future event harms them. Whether risk is significant is judged contract by contract, not by legal form.',
     explain: [
       'Insurance risk is risk transferred from the policyholder to the insurer that is not purely financial. A house fire, a death, or a car accident are insured events; a change in an interest rate on its own is not.',
-      'The risk must be significant: there must be a plausible scenario in which the insurer pays materially more than it would if the event did not happen.',
+      'The risk must be significant: there must be at least one scenario with commercial substance, however unlikely, in which the insurer could pay significant additional amounts and suffer a loss on a present value basis (IFRS 17.B18–B20).',
       'Some products look like insurance but are mainly savings (investment contracts without discretionary participation features). Those fall under IFRS 9 instead.',
     ],
     apply: [
@@ -77,7 +77,7 @@ export const IFRS17: Concept[] = [
       'IFRS 17 is measured for groups of contracts, not single policies or whole books. Groups split portfolios by expected profitability and by year of issue, so profitable and loss-making business cannot be offset.',
     explain: [
       'A portfolio is contracts with similar risks managed together, for example all motor policies.',
-      'Each portfolio is split into up to three profitability groups at initial recognition: contracts that are onerous, contracts with no significant possibility of becoming onerous, and the rest.',
+      'Each portfolio is split, at a minimum, into three profitability groups at initial recognition (some may be empty): contracts that are onerous, contracts with no significant possibility of becoming onerous subsequently, and the rest.',
       'Each group may only contain contracts issued no more than one year apart. This is the annual cohort.',
       '> The group of contracts is the unit of account. The [[csm|CSM]], [[loss-component|loss component]] and every disclosure are built from groups.',
     ],
@@ -152,7 +152,7 @@ export const IFRS17: Concept[] = [
       'Estimates are probability-weighted: an average across scenarios, not the single most likely outcome.',
     ],
     apply: [
-      'Cash flow estimates must be explicit, current, unbiased and consistent with observable market prices for financial variables (IFRS 17.33). Non-financial assumptions (mortality, lapse, claims frequency) reflect the entity’s own experience.',
+      'Cash flow estimates must be explicit, current, unbiased and consistent with observable market prices for financial variables (IFRS 17.33). Discount rates must also be consistent with observable current market prices (IFRS 17.36). Non-financial assumptions (mortality, lapse, claims frequency) reflect the entity’s own experience.',
       'Changes in fulfilment cash flows are classified as relating to future service (adjust the CSM), current or past service (profit or loss in the insurance service result), or the effect of time value and financial risk (insurance finance income or expenses).',
     ],
     implement: [
@@ -178,12 +178,12 @@ export const IFRS17: Concept[] = [
     module: 'B4',
     kind: 'measurement',
     summary:
-      'The contract boundary decides which future premiums and benefits belong to today’s contract. Cash flows after the point where the insurer can reprice for the policyholder’s risk are outside the boundary.',
+      'The contract boundary decides which future premiums and benefits belong to today’s contract. Cash flows after the point where the insurer can reprice to fully reflect the risk, of the policyholder or of the portfolio, are outside the boundary.',
     explain: [
       'If a one-year motor policy is likely to be renewed, next year’s premium is still not part of this year’s contract, because at renewal the insurer can set a new price. Renewals are new contracts.',
     ],
     apply: [
-      'Cash flows are within the boundary if they arise from substantive rights and obligations in the period in which the entity can compel premiums or has a substantive obligation to provide services. That obligation ends when the entity has the practical ability to reassess risks and set a price that fully reflects them (IFRS 17.34).',
+      'Cash flows are within the boundary if they arise from substantive rights and obligations in the period in which the entity can compel premiums or has a substantive obligation to provide services. That obligation ends when the entity has the practical ability to reassess the risks of the particular policyholder and set a price or level of benefits that fully reflects them, or when it can do so for the portfolio and the premiums for cover up to the reassessment date do not reflect risks of later periods (IFRS 17.34).',
     ],
     implement: [
       'Boundary decisions are made in actuarial projections, but the subledger should store the boundary assumption per product so analysts can explain why projected premiums stop where they do.',
@@ -211,12 +211,12 @@ export const IFRS17: Concept[] = [
       '- Bottom-up: a liquid risk-free curve plus an illiquidity premium reflecting the liabilities.',
       '- Top-down: a reference portfolio yield less adjustments for factors not relevant to the liabilities, such as expected credit losses.',
       'Current rates measure the fulfilment cash flows each period. Locked-in rates at initial recognition accrete interest on the CSM and measure changes in estimates that adjust it under the GMM.',
-      'An entity may disaggregate insurance finance income or expenses between profit or loss and OCI (the OCI option), using a systematic allocation based on the locked-in rates.',
+      'An entity may disaggregate insurance finance income or expenses between profit or loss and OCI (the OCI option), using a systematic allocation. For groups where changes in financial assumptions do not substantially affect amounts paid to policyholders, that allocation uses the locked-in rates (IFRS 17.B131); other groups use the approaches in IFRS 17.B132–B134.',
     ],
     implement: [
       'Store curves as governed reference data with an effective date and a version. Each group needs a link to its locked-in curve (often a weighted average for groups issued over a year). The sandbox uses one flat rate as both current and locked-in to keep the example readable.',
     ],
-    refs: ['IFRS 17.36', 'IFRS 17.B72–B85', 'IFRS 17.88', 'IFRS 17.B131'],
+    refs: ['IFRS 17.36', 'IFRS 17.B72–B85', 'IFRS 17.88', 'IFRS 17.B131–B134'],
     links: [
       { type: 'builds-on', to: 'fulfilment-cash-flows' },
       { type: 'posts-to', to: 'insurance-finance' },
@@ -266,7 +266,7 @@ export const IFRS17: Concept[] = [
     ],
     apply: [
       'At initial recognition (IFRS 17.38):',
-      '$ CSM₀ = max(0, −(Fulfilment cash flows + Pre-recognition cash flows derecognised))',
+      '$ CSM₀ = max(0, −(Fulfilment cash flows + Pre-recognition assets or liabilities derecognised + Cash flows arising at that date))',
       'For a group without direct participation features, the closing CSM each period is (IFRS 17.44):',
       '- opening CSM',
       '- plus new contracts added to the group',
@@ -305,12 +305,12 @@ export const IFRS17: Concept[] = [
     summary:
       'Coverage units measure how much insurance service a group provides in each period. The CSM is released in proportion to the units provided in the period against those provided now and expected in the future.',
     explain: [
-      'If a group provides the same cover each year for five years, roughly a fifth of the remaining CSM is released each year. If cover shrinks over time, for example a reducing-balance loan protection, more is released early.',
+      'If a group provides the same cover each year for five years, roughly a fifth of the original CSM is released each year: a fifth of the balance in year one, a quarter of what remains in year two, and so on. If cover shrinks over time, for example a reducing-balance loan protection, more is released early.',
       '$ Release = CSM before release × (units this period ÷ units this period and all future periods)',
     ],
     apply: [
-      'Coverage units reflect the quantity of benefits and the expected coverage period of the contracts in the group (B119). Judgement is needed for contracts with several services, such as insurance and investment-return services; the IFRS Interpretations Committee has issued agenda decisions on this.',
-      'Coverage units are typically discounted or undiscounted by policy choice; the choice should be applied consistently and disclosed.',
+      'Coverage units reflect the quantity of benefits and the expected coverage period of the contracts in the group (B119). Judgement is needed for contracts with several services, such as insurance and investment-return services. The Transition Resource Group discussed this in 2018, and the IFRS Interpretations Committee issued an agenda decision on coverage units for annuities in 2022.',
+      'IFRS 17 neither requires nor prohibits discounting coverage units (TRG, February 2018). The approach is a judgement that should be applied consistently and explained in the disclosures.',
     ],
     implement: [
       'Coverage units are an actuarial input per group and period. Store the full projected vector each period, since the release ratio uses future units. Changes in the vector are a frequent cause of unexplained CSM movements.',
@@ -336,7 +336,7 @@ export const IFRS17: Concept[] = [
     ],
     apply: [
       'The LRC is disclosed in two parts: the LRC excluding the [[loss-component|loss component]], and the loss component itself (IFRS 17.100(a)–(b)).',
-      'Under the [[paa|PAA]] the LRC is simplified to premiums received less acquisition cash flows and amounts recognised as revenue.',
+      'Under the [[paa|PAA]] the LRC is simplified to premiums received, less acquisition cash flows paid plus their amortisation, less amounts recognised as revenue (IFRS 17.55(a)).',
     ],
     implement: [
       'Model the LRC as a set of movement types (premiums, acquisition cash flows, revenue, finance, losses) so the balance and the disclosure come from the same records.',
@@ -362,11 +362,11 @@ export const IFRS17: Concept[] = [
       'A car accident on 30 December creates a claim that may be paid months later. Between the accident and payment, the insurer owes the money and records it in the LIC.',
     ],
     apply: [
-      'The LIC includes the discounted estimate of claims and claims handling costs plus a risk adjustment. Changes in the LIC estimate relate to past service and go to the insurance service result, not the CSM.',
+      'The LIC includes the discounted estimate of claims and claims handling costs plus a risk adjustment. Changes in the LIC estimate relate to past service and do not adjust the CSM. They go to the insurance service result, except effects of the time value of money and financial risk, which are insurance finance income or expenses.',
       'Under the PAA, the LIC need not be discounted if claims are expected to be paid within one year (IFRS 17.59(b)).',
     ],
     implement: [
-      'LIC cash flows usually come from reserving models (chain ladder, Bornhuetter–Ferguson). Interfaces must carry accident year to match the right group cohort.',
+      'LIC cash flows usually come from reserving models (chain ladder, Bornhuetter–Ferguson). Interfaces must carry the underwriting (issue) year to map claims to the right group cohort, and the accident year for the claims development disclosure (IFRS 17.130).',
     ],
     refs: ['IFRS 17.40(b)', 'IFRS 17.B97', 'IFRS 17.59(b)'],
     links: [
@@ -410,12 +410,12 @@ export const IFRS17: Concept[] = [
     module: 'B7',
     kind: 'measurement',
     summary:
-      'The loss component is a memo account inside the LRC that tracks losses recognised on an onerous group. It makes sure those losses are not counted again as revenue when the related claims are paid.',
+      'The loss component is a memo account inside the LRC that tracks losses recognised on an onerous group. It makes sure those losses are not counted again as revenue when the related claims and expenses are incurred.',
     explain: [
       'If a loss of 50 was booked on day one, the claims that cause it will still flow through later. Without a loss component, revenue would include 50 that was already expensed. The loss component removes it.',
     ],
     apply: [
-      'Subsequent changes in fulfilment cash flows of the LRC (release of expected claims and expenses, risk adjustment release, finance effects) are allocated on a systematic basis between the loss component and the LRC excluding it (IFRS 17.50(a), 51). Amounts allocated to the loss component are excluded from insurance revenue and reduce insurance service expenses.',
+      'Subsequent changes in fulfilment cash flows of the LRC (release of expected claims and expenses, risk adjustment release, finance effects) are allocated on a systematic basis between the loss component and the LRC excluding it (IFRS 17.50(a), 51). Amounts allocated to the loss component are excluded from insurance revenue. The claims, expenses and risk adjustment parts reduce insurance service expenses, and the finance part is presented within insurance finance income or expenses.',
       'By the end of the coverage period the loss component must be zero.',
     ],
     implement: [
@@ -446,7 +446,7 @@ export const IFRS17: Concept[] = [
       'Insurance revenue includes an allocation of the portion of premiums that relates to recovering acquisition cash flows, and insurance service expenses include the same amount (IFRS 17.B125). An asset is recognised for acquisition cash flows paid before the related group is recognised (IFRS 17.28B).',
     ],
     implement: [
-      'Acquisition costs often come from the general ledger rather than actuarial models, so the interface must allocate them to groups. The amortisation pattern should follow coverage units for consistency with the CSM release.',
+      'Acquisition costs often come from the general ledger rather than actuarial models, so the interface must allocate them to groups. The amortisation must be allocated systematically on the basis of the passage of time (IFRS 17.B125), which is not necessarily the same as the coverage unit pattern used for the CSM release.',
     ],
     refs: ['IFRS 17.28A–28F', 'IFRS 17.B125'],
     links: [
@@ -524,7 +524,7 @@ export const IFRS17: Concept[] = [
     summary:
       'The PAA is an optional simplification for the LRC, close to unearned premium accounting. It is available when the coverage period is one year or less, or when it gives a result not materially different from the GMM.',
     explain: [
-      'Most motor and home policies run for a year. For them, the PAA lets insurers recognise revenue evenly over the cover period, as unearned premium accounting did, without computing a CSM.',
+      'Most motor and home policies run for a year. For them, the PAA lets insurers recognise revenue over the cover period, usually evenly with the passage of time (or following the expected pattern of claims if risk is released unevenly), as unearned premium accounting did, without computing a CSM.',
     ],
     apply: [
       'Eligibility: coverage period of each contract in the group is one year or less, or the entity reasonably expects the PAA LRC not to differ materially from the GMM (IFRS 17.53).',
@@ -570,7 +570,7 @@ export const IFRS17: Concept[] = [
     module: 'B10',
     kind: 'measurement',
     summary:
-      'A reinsurance contract held is measured as its own asset or liability, separately from the insurance contracts it protects. Any net cost or net gain on buying the cover is deferred in a CSM, except that a loss-recovery component lets the insurer recognise recoveries of losses on onerous underlying contracts at the same time as those losses.',
+      'A reinsurance contract held is measured as its own asset or liability, separately from the insurance contracts it protects. Any net cost or net gain on buying the cover is deferred in a CSM, except that a net cost relating to events before the purchase is expensed at once (IFRS 17.65A), and a loss-recovery component lets the insurer recognise recoveries of losses on onerous underlying contracts at the same time as those losses.',
     explain: [
       'An insurer that buys reinsurance passes part of its risk to a reinsurer in return for a premium. It is now the policyholder. IFRS 17 measures that contract using the same building blocks as insurance issued, but from the buyer’s side: expected recoveries in, reinsurance premiums out.',
       'The reinsurance is not netted against the underlying business. The insurer keeps its full liability to its own policyholders and recognises the reinsurance separately, usually as an asset.',
@@ -656,15 +656,16 @@ export const IFRS17: Concept[] = [
       'To know today’s unearned profit on a policy sold in 2005, you would need to know what the insurer expected in 2005. Often that data does not exist, so the standard offers practical alternatives.',
     ],
     apply: [
-      '- Full retrospective approach: apply IFRS 17 as if it had always applied (C4–C5).',
+      '- Full retrospective approach: apply IFRS 17 as if it had always applied (C3–C4). Where this is impracticable for a group, an alternative approach is chosen (C5).',
       '- Modified retrospective approach: specified modifications to get as close as possible using reasonable and supportable information (C6–C19A).',
       '- Fair value approach: CSM equals fair value of the group (IFRS 13) less its fulfilment cash flows at transition (C20–C24).',
+      '- Comparative information and financial assets: at least one comparative period is restated (C25–C28). Entities first applying IFRS 17 and IFRS 9 together may use the classification overlay to present comparative financial assets as if IFRS 9 classification had applied, optionally without the IFRS 9 impairment requirements (C28A–C28E). Eligible financial assets may be redesignated at the date of initial application (C29–C33).',
       'The transition CSM by approach is disclosed and continues to matter as long as transition groups are in force.',
     ],
     implement: [
       'Transition balances are loaded as opening positions per group with an approach flag, so that later disclosures can show revenue and CSM by transition approach (IFRS 17.114).',
     ],
-    refs: ['IFRS 17.C1–C24', 'IFRS 17.114'],
+    refs: ['IFRS 17.C1–C33', 'IFRS 17.C28A–C28E', 'IFRS 17.114'],
     links: [
       { type: 'builds-on', to: 'csm' },
       { type: 'disclosed-in', to: 'disclosures' },

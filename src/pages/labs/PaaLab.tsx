@@ -92,7 +92,7 @@ export function PaaLab() {
             <span className="hint">Expensing is allowed only when each contract's coverage is one year or less (IFRS 17.59(a)).</span>
           </div>
           <p className="lab-note">
-            Try: switch to a single premium with 6 or more years of cover, or raise the discount rate. Both make the time value of money matter, and the gap grows.
+            Try: switch to a single premium with 6 or more years of cover, or raise the discount rate. Both make the time value of money matter, and the gap grows. A single premium paid well ahead of cover usually has a significant financing component, which IFRS 17.56 would require the PAA liability to reflect; this lab does not make that adjustment.
           </p>
         </form>
 
@@ -112,7 +112,7 @@ export function PaaLab() {
                   <strong>{ratio <= THRESHOLD ? 'Likely a reasonable approximation.' : 'Probably not a reasonable approximation.'}</strong>{' '}
                   The largest difference in the liability for remaining coverage is {money(maxDiff)}, {pct(ratio)} of the liability’s scale.
                   IFRS 17 sets no numeric threshold; this lab uses {pct(THRESHOLD)} to illustrate how an eligibility test is framed. Insurers test this at inception
-                  under reasonably possible scenarios, and IFRS 17.54 rules it out when significant variability in fulfilment cash flows is expected.
+                  under reasonably possible scenarios, and IFRS 17.54 rules it out when, at inception, significant variability is expected in the fulfilment cash flows that would affect the liability for remaining coverage before a claim is incurred.
                 </>
               )}
             </div>
@@ -184,9 +184,9 @@ export function PaaLab() {
           <div className="panel story">
             <h4>Why they differ</h4>
             <ul>
-              <li>The PAA spreads the premium over the coverage period by coverage units (or by time). The GMM builds revenue from expected claims, expenses, the risk adjustment release and the CSM release, so revenue follows the cost of providing cover as well as its volume.</li>
+              <li>The PAA spreads the expected premium over the coverage period on the basis of the passage of time, or on the expected timing of incurred insurance service expenses if risk is released significantly unevenly (IFRS 17.B126). This lab uses the coverage units as that pattern. The GMM builds revenue from expected claims, expenses, the risk adjustment release and the CSM release, so revenue follows the cost of providing cover as well as its volume.</li>
               <li>The PAA liability for remaining coverage is not discounted when there is no significant financing component (IFRS 17.56). The GMM always discounts, so interest accretes on the liability and the CSM as an insurance finance expense.</li>
-              <li>The liability for incurred claims is measured the same way under both approaches: fulfilment cash flows, discounted unless claims are paid within a year (IFRS 17.59(b)), with a risk adjustment.</li>
+              <li>The liability for incurred claims is measured the same way under both approaches: fulfilment cash flows with a risk adjustment, discounted, although under the PAA claims expected to be paid within one year of being incurred need not be discounted (IFRS 17.59(b)).</li>
               <li>Total profit over the life of the group is identical. Only the timing differs, which is why IFRS 17 lets the simpler approach stand in when the timing differences are small.</li>
             </ul>
           </div>

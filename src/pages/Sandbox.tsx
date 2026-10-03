@@ -268,7 +268,7 @@ function Bridge({ r }: { r: GmmResult }) {
   const lcSteps: Step[] = [
     { label: 'Day-one loss', value: r.initial.lossComponent },
     { label: 'Losses on changes', value: sum((x) => x.changeLoss) },
-    { label: 'Allocated to revenue', value: -sum((x) => x.lossComponentAllocation) },
+    { label: 'Allocated (reduces service expenses)', value: -sum((x) => x.lossComponentAllocation) },
     { label: 'Reversed', value: -sum((x) => x.lossReversal) },
     { label: 'End of cover', value: r.years[r.years.length - 1].close.lossComponent, total: true },
   ]
@@ -402,7 +402,7 @@ function story(r: GmmResult): string[] {
   }
   const assetYear = r.years.find((y) => y.close.lrc < -0.5)
   if (assetYear) {
-    out.push(`At the end of year ${assetYear.year} the LRC is below zero. Premiums still to be received are worth more than the cover still to be provided, so the group is an asset for now. IFRS 17 presents portfolios in an asset position separately from those in a liability position (IFRS 17.78).`)
+    out.push(`At the end of year ${assetYear.year} the LRC is below zero. Premiums still to be received are worth more than the cover still to be provided, so the remaining coverage is an asset for now. If the net position, including any LIC, is an asset, it is presented separately from portfolios in a liability position (IFRS 17.78).`)
   }
   out.push(`Over the life of the group, total profit of ${money(r.totals.profit)} equals premiums less all cash paid out (${money(r.totals.netCash)}). IFRS 17 changes when profit appears, not how much there is.`)
   return out

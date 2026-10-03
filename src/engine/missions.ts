@@ -25,7 +25,7 @@ export const MISSIONS: Mission[] = [
     goal: 'Change only the premium so the group is onerous on day one.',
     hint: 'Day one is onerous when the present value of premiums is below outflows plus the risk adjustment. Lower the premium step by step.',
     lesson:
-      'Once expected outflows plus the risk adjustment exceed expected premiums, there is no CSM. The whole shortfall is a loss in profit or loss immediately, and a loss component starts tracking it.',
+      'Once expected outflows plus the risk adjustment exceed the present value of expected premiums, there is no CSM. The whole shortfall is a loss in profit or loss immediately, and a loss component starts tracking it.',
     concept: 'onerous-contracts',
     check: (r, inp) => r.initial.lossComponent > 0 && inp.premium !== PRESETS[0].inputs.premium,
   },
@@ -49,7 +49,7 @@ export const MISSIONS: Mission[] = [
     goal: 'Make actual claims in year 3 at least 20% above expected, without moving the CSM.',
     hint: 'Use the "Actual ÷ expected" column for year 3.',
     lesson:
-      'Claims that relate to the current period are experience adjustments. They hit the insurance service result in that year, while the CSM, which only reflects future service, stays exactly where it was.',
+      'The difference between actual and expected claims for the current period is an experience adjustment. It hits the insurance service result in that year, while the CSM, which only reflects future service, stays exactly where it was.',
     concept: 'csm',
     check: (r, inp) => (inp.actualClaimsFactor[2] ?? 1) >= 1.2 && Math.abs(r.years[2].close.csm - baseline('profitable').years[2].close.csm) < 0.5,
   },
@@ -109,7 +109,7 @@ export const MISSIONS: Mission[] = [
     goal: 'Find inputs where the LRC is below zero at the end of year 1, then explain why.',
     hint: 'Annual premiums still to come count as inflows in the fulfilment cash flows. What if they are large compared with the cover left?',
     lesson:
-      'When premiums still to be received are worth more than the cover still to be provided plus the CSM, the group is an asset. IFRS 17 presents portfolios in an asset position separately from those in a liability position.',
+      'When premiums still to be received are worth more than the cover still to be provided plus the CSM, the liability for remaining coverage becomes an asset. IFRS 17 presents portfolios whose net position is an asset separately from those in a liability position (IFRS 17.78).',
     concept: 'lrc',
     check: (r) => (r.years[0]?.close.lrc ?? 0) < -0.5,
   },

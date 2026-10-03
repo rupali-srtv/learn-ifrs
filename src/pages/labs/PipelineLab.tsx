@@ -203,8 +203,8 @@ export function PipelineLab() {
         {stage === 2 && (
           <>
             <p className="muted" style={{ maxWidth: '80ch' }}>
-              The measurement engine combines actual cash flows with actuarial assumptions and stores the result as movement records: one row per movement type, by
-              measurement component. Everything downstream, journals and disclosures alike, reads these records, so they are calculated once.
+              The measurement engine combines actual cash flows with actuarial assumptions and stores the result as movement records: one row per movement type, split into the
+              LRC excluding the loss component, the loss component and the LIC. Everything downstream, journals and disclosures alike, reads these records, so they are calculated once.
             </p>
             <div className="table-wrap">
               <table className="data">
@@ -223,7 +223,7 @@ export function PipelineLab() {
               <table className="data">
                 <caption>
                   <h4>Movement records, {group.key}, {periodOf(y.year)}</h4>
-                  <div className="refline"><span className="chip">IFRS 17.103</span> Same shape as the liability reconciliation disclosure
+                  <div className="refline"><span className="chip">IFRS 17.100, 103, 105</span> Same shape as the liability reconciliation disclosure
                     <CopyCsv rows={() => [['Code', 'Movement', 'LRC excl. loss component', 'Loss component', 'LIC'], ...moves.map((m) => [m.code, m.label, m.lrcExLc, m.lc, m.lic])]} />
                   </div>
                 </caption>
