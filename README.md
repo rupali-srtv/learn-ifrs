@@ -41,3 +41,10 @@ Tagetik track pages describe implementation patterns and must be validated again
 Content version 0.1, draft pending independent technical review. See the product plan for the roadmap:
 PAA and VFA in the sandbox, remaining modules, assessments and CPD certificates, then enterprise features
 (SSO, LMS export, firm workspaces).
+
+## Deploy for free (GitHub Pages)
+
+`.github/workflows/deploy.yml` tests, builds and publishes `dist/` to GitHub Pages on every push to `main`.
+One-time setup: push this folder to a public GitHub repository, then in the repository go to
+Settings → Pages and set Source to "GitHub Actions". The site appears at
+`https://<your-user>.github.io/<repo>/`. Pages use hash URLs (`#/concept/csm`), so no server configuration is needed.
