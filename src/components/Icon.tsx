@@ -24,11 +24,12 @@ export function Icon({ name, size = 16 }: { name: keyof typeof PATHS | string; s
 }
 
 export function BrandMark() {
-  // A section sign: the portal cites the standard clause by clause.
+  // An R over an amber highlighter stroke: recognition, marked up the way a practitioner marks the standard.
   return (
     <svg className="brand-mark" viewBox="0 0 26 26" aria-hidden="true">
       <rect x="1" y="1" width="24" height="24" rx="5" fill="var(--brand)" />
-      <text x="13" y="19" textAnchor="middle" fontSize="17" fontWeight="700" fontFamily="'IBM Plex Serif', Georgia, serif" fill="var(--mark)">§</text>
+      <rect x="6" y="16" width="14" height="4" rx="1" fill="var(--mark)" />
+      <text x="13" y="18" textAnchor="middle" fontSize="15" fontWeight="700" fontFamily="'IBM Plex Serif', Georgia, serif" fill="var(--brand-ink)">R</text>
     </svg>
   )
 }

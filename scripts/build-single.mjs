@@ -15,5 +15,5 @@ const body = html.match(/<body>([\s\S]*?)<\/body>/)[1]
 // Scripts in head would run before #root exists, so move them after the body content.
 const scripts = [...head.matchAll(/<script type="module">[\s\S]*?<\/script>/g)].map((m) => m[0]).join('\n')
 const headRest = head.replace(/<script type="module">[\s\S]*?<\/script>/g, '')
-writeFileSync(join(dir, 'clausewise.html'), `${headRest.trim()}\n${body.trim()}\n${scripts}\n`)
-console.log('wrote', join(dir, 'clausewise.html'))
+writeFileSync(join(dir, 'recognara.html'), `${headRest.trim()}\n${body.trim()}\n${scripts}\n`)
+console.log('wrote', join(dir, 'recognara.html'))

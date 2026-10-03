@@ -9,7 +9,7 @@ export function About() {
         <h1 style={{ marginTop: 8 }}>How this content earns reliance</h1>
         <p className="hero-lede">
           Professional teams can rely on training material only when every statement is traceable, reviewed and current. This page
-          sets out how Clausewise is written, checked and versioned, and what this version does and does not yet cover.
+          sets out how Recognara is written, checked and versioned, and what this version does and does not yet cover.
         </p>
       </div>
 
@@ -54,7 +54,7 @@ export function About() {
       <section>
         <h2>Copyright and independence</h2>
         <p>All content is original. The portal cites paragraph numbers rather than reproducing the text of IFRS Accounting Standards, which are copyright of the IFRS Foundation. Read the standards themselves at ifrs.org.</p>
-        <p>CCH Tagetik is a product and trademark of Wolters Kluwer. Clausewise is independent and is not affiliated with or endorsed by Wolters Kluwer or the IFRS Foundation. The Tagetik track describes implementation patterns that must be validated against a licensed release.</p>
+        <p>CCH Tagetik is a product and trademark of Wolters Kluwer. Recognara is independent and is not affiliated with or endorsed by Wolters Kluwer or the IFRS Foundation. The Tagetik track describes implementation patterns that must be validated against a licensed release.</p>
       </section>
 
       <section>

@@ -1,4 +1,4 @@
-# Clausewise: IFRS 17 & Tagetik learning portal
+# Recognara: IFRS 17 & Tagetik learning portal
 
 A learning portal that teaches IFRS from zero, goes deep on IFRS 17, and connects every concept to its
 calculation, journal entry, disclosure and CCH Tagetik implementation.

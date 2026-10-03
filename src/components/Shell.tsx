@@ -44,9 +44,9 @@ export function Shell({ children }: { children: ReactNode }) {
       <a className="skip" href="#main">Skip to content</a>
       <header className="topbar">
         <div className="topbar-inner">
-          <Link to="/" className="brand" aria-label="Clausewise home">
+          <Link to="/" className="brand" aria-label="Recognara home">
             <BrandMark />
-            <span>Clausewise <small>IFRS 17 & Tagetik</small></span>
+            <span>Recognara <small>IFRS 17 & Tagetik</small></span>
           </Link>
           <nav className={`nav${menu ? ' open' : ''}`} aria-label="Main">
             {NAV.map((n) => (
@@ -77,7 +77,7 @@ export function Shell({ children }: { children: ReactNode }) {
       <footer className="footer">
         <div className="footer-inner">
           <div>
-            Clausewise · content {CONTENT_VERSION} · {CONTENT_STATUS}.
+            Recognara · content {CONTENT_VERSION} · {CONTENT_STATUS}.
           </div>
           <div>
             Educational material, not professional advice. Always refer to the IFRS Accounting Standards issued by the IFRS
