@@ -24,13 +24,11 @@ export function Icon({ name, size = 16 }: { name: keyof typeof PATHS | string; s
 }
 
 export function BrandMark() {
-  // Two ledger columns joined by a link: concept and implementation.
+  // A section sign: the portal cites the standard clause by clause.
   return (
     <svg className="brand-mark" viewBox="0 0 26 26" aria-hidden="true">
       <rect x="1" y="1" width="24" height="24" rx="5" fill="var(--brand)" />
-      <rect x="6" y="7" width="5" height="12" rx="1" fill="var(--brand-ink)" />
-      <rect x="15" y="7" width="5" height="12" rx="1" fill="var(--mark)" />
-      <rect x="10" y="12" width="6" height="2" fill="var(--brand-ink)" />
+      <text x="13" y="19" textAnchor="middle" fontSize="17" fontWeight="700" fontFamily="'IBM Plex Serif', Georgia, serif" fill="var(--mark)">§</text>
     </svg>
   )
 }
