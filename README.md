@@ -39,7 +39,7 @@ Tagetik track pages describe implementation patterns and must be validated again
 ## Status
 
 Version 1.0 (3 October 2026). Every page, glossary entry, quiz question and lab explanation was fact-checked
-against IFRS 17 as amended June 2020 and December 2021, and 54 corrections were made. Sign-off by an independent
+against IFRS 17 as amended June 2020 and December 2021, and more than 50 corrections were made. Sign-off by an independent
 human expert is still pending; until then the portal is for learning, not a basis for accounting conclusions.
 
 Roadmap: VFA in the sandbox, assessments and CPD certificates, then enterprise features (SSO, LMS export,
