@@ -1,4 +1,5 @@
 import type { GmmInputs } from './gmm'
+import { TBIC_GROUP_LIST } from './tbic'
 
 export interface Preset {
   id: string
@@ -86,4 +87,11 @@ export const PRESETS: Preset[] = [
       assumptionChange: null,
     },
   },
+  // TBIC groups come last so existing missions and links keep their preset positions.
+  ...TBIC_GROUP_LIST.map((g) => ({
+    id: g.id,
+    name: `${g.name} (TBIC, ₹ lakh)`,
+    summary: g.story,
+    inputs: g.inputs,
+  })),
 ]

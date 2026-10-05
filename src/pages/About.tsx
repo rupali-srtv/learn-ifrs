@@ -52,6 +52,21 @@ export function About() {
       </section>
 
       <section>
+        <h2>Written for learners in India</h2>
+        <p>
+          Most Recognara learners work in India, where IFRS 17 applies through <b>Ind AS 117 Insurance Contracts</b>, notified by the Ministry of
+          Corporate Affairs on 12 August 2024. IRDAI’s Ind AS framework for insurers applies from 1 April 2026, with up to one year of forbearance
+          and up to two years of parallel reporting. Pages cite IFRS 17 paragraphs because Ind AS 117 is based on IFRS 17; check Ind AS 117 itself and
+          IRDAI’s latest circulars for India-specific differences and dates.
+        </p>
+        <p>
+          Worked examples and numeric questions follow <b>TBIC (The Best Insurance Company)</b>, a fictional Indian insurance group, with amounts in
+          ₹ lakh. Every TBIC figure is produced by the same engine as the sandbox, and automated tests recalculate the answers independently, so
+          the text, the working and the journals cannot disagree.
+        </p>
+      </section>
+
+      <section>
         <h2>Copyright and independence</h2>
         <p>All content is original. The portal cites paragraph numbers rather than reproducing the text of IFRS Accounting Standards, which are copyright of the IFRS Foundation. Read the standards themselves at ifrs.org.</p>
         <p>CCH Tagetik is a product and trademark of Wolters Kluwer. Recognara is independent and is not affiliated with or endorsed by Wolters Kluwer or the IFRS Foundation. The Tagetik track describes implementation patterns that must be validated against a licensed release.</p>
@@ -60,10 +75,10 @@ export function About() {
       <section>
         <h2>What comes next</h2>
         <ul>
-          <li>Independent technical review and an external advisory panel.</li>
-          <li>Remaining modules: reinsurance held, the Conceptual Framework, operating IFRS 17, platform foundations.</li>
-          <li>PAA and VFA in the sandbox, case studies, assessments and CPD certificates.</li>
-          <li>Enterprise features: single sign-on, LMS export and firm workspaces.</li>
+          <li>Independent technical review by qualified practitioners, including review against Ind AS 117.</li>
+          <li>More TBIC worked examples and numeric questions beyond the measurement modules.</li>
+          <li>The VFA and reinsurance held in the sandbox.</li>
+          <li>Recognara stays free and open source; contributions and corrections are welcome.</li>
         </ul>
       </section>
     </div>

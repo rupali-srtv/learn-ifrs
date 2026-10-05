@@ -44,7 +44,8 @@ export function Sandbox() {
   const navigate = useNavigate()
   const [params, setParams] = useSearchParams()
   const mission: Mission | undefined = MISSION_BY_ID[params.get('mission') ?? '']
-  const startPreset = PRESETS.find((p) => p.id === mission?.preset) ?? PRESETS[0]
+  // A worked example links here with ?preset=<id> to open its scenario.
+  const startPreset = PRESETS.find((p) => p.id === (mission?.preset ?? params.get('preset'))) ?? PRESETS[0]
   const [presetId, setPresetId] = useState(startPreset.id)
   const [inp, setInp] = useState<GmmInputs>(startPreset.inputs)
   // Inputs reset to the mission's starting scenario whenever a different mission is opened.

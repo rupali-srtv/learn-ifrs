@@ -23,6 +23,12 @@ export const LABS = [
     tags: ['IFRS 17.36', 'B72', 'OCI option'],
   },
   {
+    to: '/decide',
+    title: 'Decision trees',
+    blurb: 'Six classification questions as clickable trees: scope, separating components, the contract boundary, PAA eligibility, the VFA test and grouping. Every question cites its paragraph.',
+    tags: ['Scope', 'PAA', 'VFA', 'Grouping'],
+  },
+  {
     to: '/lab/pipeline',
     title: 'Implementation pipeline',
     blurb: 'Follow numbers through the chain a CCH Tagetik solution builds: load, validate, calculate movements, post, reconcile and drill back. Break the data and watch the controls catch it.',

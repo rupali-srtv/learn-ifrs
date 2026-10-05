@@ -10,6 +10,15 @@ import { RichText, Inline } from '../components/RichText'
 import { usePrefs } from '../prefs'
 import { NotFound } from './NotFound'
 import { Icon } from '../components/Icon'
+import { GOALS } from '../content/objectives'
+import { WORKED_BY_CONCEPT } from '../content/worked'
+import { NUMERIC_BY_CONCEPT } from '../content/numeric'
+import { TREES_BY_CONCEPT } from '../content/decisions'
+import { Objectives } from '../components/Objectives'
+import { WorkedExample } from '../components/WorkedExample'
+import { NumericSet } from '../components/Numeric'
+import { MasteryBadge } from '../components/Mastery'
+import { useMastery } from '../learning/useMastery'
 
 const DEPTHS: { id: Depth; label: string; sub: string }[] = [
   { id: 'explain', label: 'Explain', sub: 'Plain language' },
@@ -51,6 +60,7 @@ export function ConceptPage() {
   const { id = '' } = useParams()
   const c = CONCEPT_BY_ID[id]
   const { depth, setDepth, markVisited } = usePrefs()
+  const mastery = useMastery()
 
   useEffect(() => {
     if (c) markVisited(c.id)
@@ -79,6 +89,10 @@ export function ConceptPage() {
   const lab = LAB_FOR[c.id]
   const missions = MISSIONS.filter((m) => m.concept === c.id)
   const quiz = QUIZ_BY_ID[c.id]
+  const goals = GOALS[c.id]
+  const worked = WORKED_BY_CONCEPT[c.id]
+  const numeric = NUMERIC_BY_CONCEPT[c.id] ?? []
+  const trees = TREES_BY_CONCEPT[c.id] ?? []
 
   return (
     <>
@@ -97,7 +111,7 @@ export function ConceptPage() {
                 <ol>
                   {m.concepts.map((cid) => (
                     <li key={cid}>
-                      <Link to={`/concept/${cid}`} aria-current={cid === c.id ? 'page' : undefined}>{CONCEPT_BY_ID[cid].title}</Link>
+                      <Link to={`/concept/${cid}`} aria-current={cid === c.id ? 'page' : undefined}>{CONCEPT_BY_ID[cid].title} <MasteryBadge level={mastery(cid)} compact /></Link>
                     </li>
                   ))}
                 </ol>
@@ -107,9 +121,11 @@ export function ConceptPage() {
         </aside>
 
         <article className="concept-main">
-          <div className="eyebrow">Module {c.module} · {module?.title} · {minutes} min read</div>
+          <div className="eyebrow">Module {c.module} · {module?.title} · {minutes} min read <MasteryBadge level={mastery(c.id)} /></div>
           <h1 className="concept-title">{c.title}</h1>
           <p className="summary"><Inline text={c.summary} /></p>
+
+          {goals && <Objectives goals={goals} />}
 
           <div className="depth" role="group" aria-label="Depth">
             {DEPTHS.map((d) => (
@@ -137,6 +153,18 @@ export function ConceptPage() {
               {c.lenses.developer && <div className="panel lens"><strong>Developer</strong><span>{c.lenses.developer}</span></div>}
             </div>
           )}
+
+          {worked && <WorkedExample w={worked} />}
+
+          {trees.map((t) => (
+            <div className="panel try-box" key={`tree-${t.id}`}>
+              <div>
+                <strong>Decision tree: {t.title}</strong>
+                <div className="muted" style={{ fontSize: 'var(--step--1)' }}>{t.asks}</div>
+              </div>
+              <Link className="btn btn-primary" to={`/decide/${t.id}`}>Walk through it <Icon name="arrow" /></Link>
+            </div>
+          ))}
 
           {c.sandbox && (
             <div className="panel try-box">
@@ -169,6 +197,8 @@ export function ConceptPage() {
           )}
 
           {quiz && quiz.length > 0 && <Quiz key={c.id} conceptId={c.id} questions={quiz} />}
+
+          {numeric.length > 0 && <NumericSet key={`numeric-${c.id}`} questions={numeric} />}
 
           <nav className="pager" aria-label="Next and previous">
             {prev ? <Link to={`/concept/${prev.id}`}><small>Previous</small>{prev.title}</Link> : <span />}
