@@ -2,9 +2,10 @@ import { useState } from 'react'
 import type { QuizQuestion } from '../content/types'
 import { usePrefs } from '../prefs'
 import { Inline } from './RichText'
+import { quizItem } from '../learning/review'
 
 export function Quiz({ conceptId, questions }: { conceptId: string; questions: QuizQuestion[] }) {
-  const { quizScores, saveQuiz } = usePrefs()
+  const { quizScores, saveQuiz, studyAnswer } = usePrefs()
   const [picked, setPicked] = useState<(number | null)[]>(() => questions.map(() => null))
   const [attempt, setAttempt] = useState(0)
   const answered = picked.filter((p) => p !== null).length
@@ -15,6 +16,7 @@ export function Quiz({ conceptId, questions }: { conceptId: string; questions: Q
     if (picked[qi] !== null) return
     const next = picked.map((p, i) => (i === qi ? oi : p))
     setPicked(next)
+    studyAnswer(quizItem(conceptId, qi), oi === questions[qi].answer)
     if (next.every((p) => p !== null)) saveQuiz(conceptId, next.filter((p, i) => p === questions[i].answer).length, questions.length)
   }
 

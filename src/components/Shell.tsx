@@ -4,18 +4,21 @@ import { CONTENT_STATUS, CONTENT_VERSION } from '../content'
 import { usePrefs } from '../prefs'
 import { BrandMark, Icon } from './Icon'
 import { SearchDialog } from './SearchDialog'
+import { dueItems } from '../learning/review'
 
 const NAV = [
   { to: '/learn', label: 'Learn' },
   { to: '/lab', label: 'Labs' },
   { to: '/map', label: 'Concept map' },
   { to: '/glossary', label: 'Glossary' },
+  { to: '/review', label: 'Review' },
   { to: '/progress', label: 'Progress' },
   { to: '/about', label: 'Trust & method' },
 ]
 
 export function Shell({ children }: { children: ReactNode }) {
-  const { theme, setTheme } = usePrefs()
+  const { theme, setTheme, review } = usePrefs()
+  const due = dueItems(review).length
   const [menu, setMenu] = useState(false)
   const [search, setSearch] = useState(false)
   const loc = useLocation()
@@ -50,8 +53,9 @@ export function Shell({ children }: { children: ReactNode }) {
           </Link>
           <nav className={`nav${menu ? ' open' : ''}`} aria-label="Main">
             {NAV.map((n) => (
-              <NavLink key={n.to} to={n.to} className={({ isActive }) => (isActive || (n.to === '/lab' && loc.pathname === '/sandbox') ? 'active' : '')}>
+              <NavLink key={n.to} to={n.to} className={({ isActive }) => (isActive || (n.to === '/lab' && (loc.pathname === '/sandbox' || loc.pathname.startsWith('/decide'))) ? 'active' : '')}>
                 {n.label}
+                {n.to === '/review' && due > 0 && <span className="nav-count" aria-label={`${due} due`}>{due}</span>}
               </NavLink>
             ))}
           </nav>

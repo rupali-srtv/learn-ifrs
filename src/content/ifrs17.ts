@@ -22,11 +22,13 @@ export const IFRS17: Concept[] = [
       '- Separation of the insurance service result from insurance finance income or expenses.',
       '- Extensive [[disclosures|disclosures]], including reconciliations of every liability component.',
       'The standard was issued in May 2017 and amended in June 2020, when the effective date moved to 1 January 2023.',
+      'In India, IFRS 17 applies through Ind AS 117 Insurance Contracts, notified by the Ministry of Corporate Affairs on 12 August 2024 (G.S.R. 492(E)). It replaces Ind AS 104, India’s equivalent of IFRS 4. When an insurer moves to Ind AS is set by the insurance regulator, IRDAI: its Ind AS framework applies from 1 April 2026 (FY 2026-27), with up to one year of forbearance for insurers that were not ready and up to two years of parallel reporting on the old and new bases.',
+      '> Dates in India have moved more than once, so check IRDAI’s latest circulars before relying on one. In September 2026 IRDAI reported that 11 insurers had adopted Ind AS from FY 2026-27 and that insurers granted forbearance will adopt from FY 2027-28.',
     ],
     implement: [
       'IFRS 17 is as much a data and process change as an accounting one. It needs cash flow projections from actuarial models at group-of-contracts level, a calculation engine for the CSM and loss components, an accounting engine for journals, and a reporting layer for disclosures. The [[tagetik-overview|Tagetik track]] follows that chain end to end.',
     ],
-    refs: ['IFRS 17.1', 'IFRS 17.C1', 'IFRS 17 Introduction (May 2017)'],
+    refs: ['IFRS 17.1', 'IFRS 17.C1', 'IFRS 17 Introduction (May 2017)', 'Ind AS 117'],
     links: [
       { type: 'builds-on', to: 'what-is-ifrs' },
       { type: 'measured-by', to: 'gmm' },
@@ -78,7 +80,7 @@ export const IFRS17: Concept[] = [
     explain: [
       'A portfolio is contracts with similar risks managed together, for example all motor policies.',
       'Each portfolio is split, at a minimum, into three profitability groups at initial recognition (some may be empty): contracts that are onerous, contracts with no significant possibility of becoming onerous subsequently, and the rest.',
-      'Each group may only contain contracts issued no more than one year apart. This is the annual cohort.',
+      'Each group may only contain contracts issued no more than one year apart. This is the annual cohort. Annual cohorts stop profitable older business from masking a fall in the profitability of newer business over time.',
       '> The group of contracts is the unit of account. The [[csm|CSM]], [[loss-component|loss component]] and every disclosure are built from groups.',
     ],
     apply: [
@@ -531,7 +533,7 @@ export const IFRS17: Concept[] = [
       'Acquisition cash flows can be expensed when incurred if coverage is one year or less (IFRS 17.59(a)). The LIC is still measured at fulfilment cash flows. If facts indicate a group is onerous, an onerous test under the GMM is required (IFRS 17.57).',
     ],
     implement: [
-      'PAA is often implemented as a lighter path in the same engine, reusing LIC and disclosure logic. The [[measurement-sandbox|sandbox]] currently models the GMM; a PAA comparison view is planned for the next release.',
+      'PAA is often implemented as a lighter path in the same engine, reusing LIC and disclosure logic. The [[measurement-sandbox|sandbox]] models the GMM, and the PAA lab measures one group both ways.',
     ],
     refs: ['IFRS 17.53–59', 'IFRS 17.B126'],
     links: [

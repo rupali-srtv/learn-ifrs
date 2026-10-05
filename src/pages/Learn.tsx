@@ -1,8 +1,9 @@
 import { Link, useParams } from 'react-router-dom'
 import { CONCEPT_BY_ID, TRACKS, TRACK_BY_ID } from '../content'
-import { usePrefs } from '../prefs'
 import { NotFound } from './NotFound'
 import { Icon } from '../components/Icon'
+import { MasteryBadge, MasteryLegend } from '../components/Mastery'
+import { useMastery } from '../learning/useMastery'
 
 export function Learn() {
   return (
@@ -10,6 +11,7 @@ export function Learn() {
       <div className="eyebrow">Learn</div>
       <h1 style={{ marginTop: 8 }}>Learning tracks</h1>
       <p className="hero-lede">Start with Foundations if accounting is new to you. Go straight to IFRS 17 if you know the basics. Use the Tagetik track when you are designing or building a system.</p>
+      <MasteryLegend />
       {TRACKS.map((t) => (
         <section className="section" key={t.id} style={{ marginTop: 40 }}>
           <div className="section-head">
@@ -28,7 +30,7 @@ export function Learn() {
 }
 
 function ModuleList({ trackId }: { trackId: string }) {
-  const { visited } = usePrefs()
+  const mastery = useMastery()
   const t = TRACK_BY_ID[trackId]
   return (
     <div className="panel module-list">
@@ -42,8 +44,7 @@ function ModuleList({ trackId }: { trackId: string }) {
               <div className="module-links">
                 {m.concepts.map((id) => (
                   <Link key={id} to={`/concept/${id}`}>
-                    {visited.includes(id) && <span aria-label="read" style={{ color: 'var(--good)', marginRight: 4 }}><Icon name="check" size={13} /></span>}
-                    {CONCEPT_BY_ID[id].title}
+                    {CONCEPT_BY_ID[id].title} <MasteryBadge level={mastery(id)} compact />
                   </Link>
                 ))}
               </div>

@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { ROLES, type Depth, type RoleId } from './content'
+import { recordReviewAnswer, recordStudyAnswer, type ReviewState } from './learning/review'
 
 type Theme = 'system' | 'light' | 'dark'
 
@@ -18,6 +19,14 @@ interface Prefs {
   completeMission: (id: string) => void
   quizScores: Record<string, { score: number; total: number }>
   saveQuiz: (id: string, score: number, total: number) => void
+  /** Numeric question id -> solved at least once (false = attempted, not yet solved). */
+  numericSolved: Record<string, boolean>
+  recordNumeric: (id: string, correct: boolean) => void
+  review: ReviewState
+  /** An answer given while studying a page: adds the question to the review queue. */
+  studyAnswer: (item: string, correct: boolean) => void
+  /** An answer given in a review session: moves the card between boxes. */
+  reviewAnswer: (item: string, correct: boolean) => void
   resetProgress: () => void
 }
 
@@ -48,6 +57,8 @@ export function PrefsProvider({ children }: { children: ReactNode }) {
   const [lastConcept, setLastConcept] = useState<string | null>(() => load('ll.last', null))
   const [missionsDone, setMissionsDone] = useState<string[]>(() => load('ll.missions', []))
   const [quizScores, setQuizScores] = useState<Record<string, { score: number; total: number }>>(() => load('ll.quiz', {}))
+  const [numericSolved, setNumericSolved] = useState<Record<string, boolean>>(() => load('ll.numeric', {}))
+  const [review, setReview] = useState<ReviewState>(() => load('ll.review', {}))
 
   useEffect(() => {
     const root = document.documentElement
@@ -105,12 +116,38 @@ export function PrefsProvider({ children }: { children: ReactNode }) {
         save('ll.quiz', next)
         return next
       }),
+    numericSolved,
+    recordNumeric: (id, correct) =>
+      setNumericSolved((m) => {
+        // Once solved, a question stays solved.
+        if (m[id] === true || m[id] === correct) return m
+        const next = { ...m, [id]: correct }
+        save('ll.numeric', next)
+        return next
+      }),
+    review,
+    studyAnswer: (item, correct) =>
+      setReview((st) => {
+        const next = recordStudyAnswer(st, item, correct)
+        if (next !== st) save('ll.review', next)
+        return next
+      }),
+    reviewAnswer: (item, correct) =>
+      setReview((st) => {
+        const next = recordReviewAnswer(st, item, correct)
+        save('ll.review', next)
+        return next
+      }),
     resetProgress: () => {
       setVisited([])
       setLastConcept(null)
       setMissionsDone([])
       setQuizScores({})
-      for (const k of ['ll.visited', 'll.last', 'll.missions', 'll.quiz']) save(k, k === 'll.quiz' ? {} : k === 'll.last' ? null : [])
+      setNumericSolved({})
+      setReview({})
+      for (const k of ['ll.visited', 'll.missions']) save(k, [])
+      for (const k of ['ll.quiz', 'll.numeric', 'll.review']) save(k, {})
+      save('ll.last', null)
     },
   }
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
